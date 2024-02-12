@@ -65,15 +65,23 @@ class ChatScreenState extends State<ChatScreen> {
           'Kamel abid',
           style: TextStyle(
             color: Colors.white,
-            fontSize: 14,
+            fontSize: 16,
           ),
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back,
+          color: Colors.white,),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
         ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: Icon(Icons.chat,
+            color: Colors.white,
+            ),
             onPressed: () async {
-              await _auth.signOut();
-              Navigator.of(context).pop();
+              
             },
           ),
         ],
@@ -83,7 +91,11 @@ class ChatScreenState extends State<ChatScreen> {
           Expanded(
             
             child: StreamBuilder<QuerySnapshot>(
-  stream: _firestore.collection('messages').orderBy('timestamp').snapshots(),
+  stream: _firestore.collection('messages')
+    .where('sender', isEqualTo: _user!.email)
+    .orderBy('timestamp', descending: true)
+    .snapshots(),
+
   builder: (context, snapshot) {
     if (!snapshot.hasData) {
       return Center(
@@ -116,7 +128,8 @@ class ChatScreenState extends State<ChatScreen> {
             child: Row(
               children: <Widget>[
                 IconButton(
-                  icon: Icon(Icons.camera),
+                  icon: Icon(Icons.camera,
+                  color: Color(0xFF002E7F),),
                   onPressed: () => _pickImage(ImageSource.camera),
                 ),
                 Expanded(
@@ -128,7 +141,8 @@ class ChatScreenState extends State<ChatScreen> {
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.send),
+                  icon: Icon(Icons.send,
+                  color: Color(0xFF002E7F),),
                   onPressed: () => _sendMessage(),
                 ),
               ],
