@@ -1,9 +1,12 @@
 
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
-import 'package:msgarage/screens/client.dart';
-import 'package:msgarage/screens/navbar.chat.dart';
+import 'client.dart';
+import 'navbar.chat.dart';
 
 class Rendezvous extends StatelessWidget {
   @override
@@ -40,11 +43,40 @@ class _MyFormState extends State<MyForm> {
   TextEditingController _objetController = TextEditingController();
   TextEditingController _vehiculeController = TextEditingController();
   TextEditingController _immaController = TextEditingController();
-    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-      int demandeCounter = 1;
 
- Future<void> saveDataToFirebase() async {
-    String demande = 'Demande $demandeCounter';
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  XFile? _pickedFile;
+
+  Future<int> getLatestDemandNumber() async {
+    try {
+      QuerySnapshot querySnapshot =
+          await _firestore.collection('rendezvous').orderBy('dated', descending: true).limit(1).get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        return querySnapshot.docs[0].get('demandeCounter') + 1;
+      } else {
+        return 1; // If no demands exist, start from 1
+      }
+    } catch (e) {
+      print('Error getting latest demand number: $e');
+      return 1; // Return 1 in case of an error
+    }
+  }
+
+  Future<void> _pickFile() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _pickedFile = pickedFile;
+      });
+    }
+  }
+
+  Future<void> saveDataToFirebase() async {
+    int latestDemandNumber = await getLatestDemandNumber();
+    String demande = 'Demande $latestDemandNumber';
     String dated = DateTime.now().toString();
     String client = _clientController.text;
     String date = _dateController.text;
@@ -52,37 +84,57 @@ class _MyFormState extends State<MyForm> {
     String immatriculation = _immaController.text;
     String objet = _objetController.text;
     String vehicule = _vehiculeController.text;
-    try {
-      // Save data to Firebase
-      await _firestore.collection('rendezvous').add({
-        'demande': demande,
-        'dated': dated,
-        'client' : client,
-        'date' : date,
-        'heure' : heure,
-        'immatriculation' : immatriculation,
-        'objet' : objet,
-        'vehicule' : vehicule,
- 
 
-        
+    try {
+      if (_pickedFile != null) {
+        final file = File(_pickedFile!.path);
+        final storageReference = firebase_storage.FirebaseStorage.instance
+            .ref()
+            .child('files/${DateTime.now().millisecondsSinceEpoch}');
+        await storageReference.putFile(file);
+        final downloadURL = await storageReference.getDownloadURL();
+
+        await _firestore.collection('rendezvous').add({
+          'demande': demande,
+          'dated': dated,
+          'client': client,
+          'date': date,
+          'heure': heure,
+          'immatriculation': immatriculation,
+          'objet': objet,
+          'vehicule': vehicule,
+          'fileURL': downloadURL,
+          'demandeCounter': latestDemandNumber,
+        });
+      } else {
+        await _firestore.collection('rendezvous').add({
+          'demande': demande,
+          'dated': dated,
+          'client': client,
+          'date': date,
+          'heure': heure,
+          'immatriculation': immatriculation,
+          'objet': objet,
+          'vehicule': vehicule,
+          'demandeCounter': latestDemandNumber,
+        });
+      }
+
+      setState(() {
+        _demandeController.text = '$latestDemandNumber';
       });
 
-     
-      demandeCounter++;
+      _datedController.clear();
+      _clientController.clear();
+      _dateController.clear();
+      _heureController.clear();
+      _immaController.clear();
+      _objetController.clear();
+      _vehiculeController.clear();
+      _pickedFile = null; // Clear the picked file
 
-   _demandeController.clear();
-    _datedController.clear();
-    _clientController.clear();
-    _dateController.clear();
-    _heureController.clear();
-    _immaController.clear();
-    _objetController.clear();
-    _vehiculeController.clear();
-      // Clear other fields similarly
     } catch (e) {
       print('Error saving data to Firebase: $e');
-      // Handle error as needed
     }
   }
 
@@ -121,7 +173,7 @@ class _MyFormState extends State<MyForm> {
                     ),
                     child: TextFormField(
                       controller: _demandeController,
-                      enabled: true,
+                      enabled: false,
                       decoration: InputDecoration(
                         hintText: "         Demande",
                         hintStyle: TextStyle(
@@ -150,7 +202,7 @@ class _MyFormState extends State<MyForm> {
                     ),
                     child: TextFormField(
                       controller: _datedController,
-                      enabled: true,
+                      enabled: false,
                       decoration: InputDecoration(
                         hintText: "      Date demande",
                         hintStyle: TextStyle(
@@ -431,7 +483,7 @@ class _MyFormState extends State<MyForm> {
                   children: [
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: _pickFile,
                         style: ElevatedButton.styleFrom(
                           primary: Color(0xFF002E7F),
                           shape: RoundedRectangleBorder(
@@ -451,13 +503,10 @@ class _MyFormState extends State<MyForm> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: (){
-                          // Call the saveData method when the button is pressed
                           
-                                 saveDataToFirebase();
-        
-
-                          Navigator.push(
-                            context,
+                      saveDataToFirebase();
+                      Navigator.push(
+                      context,
                             MaterialPageRoute(builder: (context) => StatPage()),
                           );
                         },
@@ -479,6 +528,14 @@ class _MyFormState extends State<MyForm> {
                   ],
                 ),
               ),
+              if (_pickedFile != null)
+        Container(
+          margin: EdgeInsets.only(top: 10),
+          child: Image.file(
+            File(_pickedFile!.path),
+            height: 100,
+          ),
+        ),
               const SizedBox(
                 height: 100,
                 width: 30,
