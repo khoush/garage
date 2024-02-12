@@ -1,13 +1,9 @@
-
-
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:msgarage/components/buton.dart';
-import 'package:msgarage/screens/client.dart';
+
 import 'package:msgarage/screens/navbar.chat.dart';
 import 'package:msgarage/screens/signup.dart';
-
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -22,47 +18,49 @@ class _LoginScreenState extends State<LoginScreen> {
 
   FocusNode emailFocusNode = FocusNode();
   FocusNode passwordFocusNode = FocusNode();
-   final emailController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   bool isLoading = false;
-void signUserIn(BuildContext context) async {
-  setState(() {
-    isLoading = true;
-  });
 
-  try {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: emailController.text,
-      password: passwordController.text,
-    ).then((value) {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => ClientPage()));
-    });
-  } on FirebaseAuthException {
-    wrongMessage(); // Call the method to show the error message
-  } finally {
+  void signUserIn(BuildContext context) async {
     setState(() {
-      isLoading = false;
+      isLoading = true;
     });
-  }
-}
 
-void wrongMessage() {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return const AlertDialog(
-        backgroundColor: Colors.white,
-        title: Center(
-          child: Text(
-            'Données incorrectes ',
-            style: TextStyle(color: Colors.black),
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      ).then((value) {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => StatPage()));
+      });
+    } on FirebaseAuthException {
+      wrongMessage(); // Call the method to show the error message
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  void wrongMessage() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const AlertDialog(
+          backgroundColor: Colors.white,
+          title: Center(
+            child: Text(
+              'Données incorrectes ',
+              style: TextStyle(color: Colors.black),
+            ),
           ),
-        ),
-      );
-    },
-  );
-}
+        );
+      },
+    );
+  }
+
   @override
   void dispose() {
     emailFocusNode.dispose();
@@ -139,13 +137,8 @@ void wrongMessage() {
                 ),
                 SizedBox(height: 50),
                 MyButton(
-                    onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => StatPage(),
-                      ),
-                    );
+                  onTap: () {
+                    signUserIn(context); // Call the sign-in method
                   },
                 ),
                 SizedBox(height: 10),
@@ -183,23 +176,19 @@ class CustomTextField extends StatefulWidget {
   final bool isPassword;
   final IconData? prefixIcon;
   final FocusNode? focusNode;
-  final controller;
+  final TextEditingController controller;
 
   const CustomTextField({
     required this.label,
     this.isPassword = false,
     this.prefixIcon,
-    this.focusNode, 
-    this.controller,
-   
-
+    required this.focusNode,
+    required this.controller,
   });
 
   @override
   _CustomTextFieldState createState() => _CustomTextFieldState();
 }
-
-
 
 class _CustomTextFieldState extends State<CustomTextField> {
   @override
@@ -211,13 +200,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
         obscureText: widget.isPassword,
         style: TextStyle(color: Colors.black),
         focusNode: widget.focusNode,
+        controller: widget.controller,
         decoration: InputDecoration(
           labelText: widget.label,
           labelStyle: TextStyle(
             color: widget.focusNode?.hasFocus == true
                 ? Colors.transparent
                 : Colors.grey,
-                fontSize: 12
+            fontSize: 12,
           ),
           focusedBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.grey),
@@ -265,8 +255,7 @@ class CustomDropdownField extends StatelessWidget {
         onChanged: onChanged,
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: TextStyle(color: Colors.grey,
-          fontSize: 12),
+          labelStyle: TextStyle(color: Colors.grey, fontSize: 12),
           focusedBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.grey),
           ),

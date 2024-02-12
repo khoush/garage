@@ -1,6 +1,9 @@
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:msgarage/screens/avancement.dart';
+
 import 'package:msgarage/screens/client.dart';
+import 'package:msgarage/screens/navbar.chat.dart';
 
 class Rendezvous extends StatelessWidget {
   @override
@@ -31,12 +34,58 @@ class MyForm extends StatefulWidget {
 class _MyFormState extends State<MyForm> {
   TextEditingController _demandeController = TextEditingController();
   TextEditingController _datedController = TextEditingController();
-  TextEditingController _numController = TextEditingController();
   TextEditingController _dateController = TextEditingController();
+  TextEditingController _heureController = TextEditingController();
   TextEditingController _clientController = TextEditingController();
   TextEditingController _objetController = TextEditingController();
   TextEditingController _vehiculeController = TextEditingController();
   TextEditingController _immaController = TextEditingController();
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+      int demandeCounter = 1;
+
+ Future<void> saveDataToFirebase() async {
+    String demande = 'Demande $demandeCounter';
+    String dated = DateTime.now().toString();
+    String client = _clientController.text;
+    String date = _dateController.text;
+    String heure = _heureController.text;
+    String immatriculation = _immaController.text;
+    String objet = _objetController.text;
+    String vehicule = _vehiculeController.text;
+    try {
+      // Save data to Firebase
+      await _firestore.collection('rendezvous').add({
+        'demande': demande,
+        'dated': dated,
+        'client' : client,
+        'date' : date,
+        'heure' : heure,
+        'immatriculation' : immatriculation,
+        'objet' : objet,
+        'vehicule' : vehicule,
+ 
+
+        
+      });
+
+     
+      demandeCounter++;
+
+   _demandeController.clear();
+    _datedController.clear();
+    _clientController.clear();
+    _dateController.clear();
+    _heureController.clear();
+    _immaController.clear();
+    _objetController.clear();
+    _vehiculeController.clear();
+      // Clear other fields similarly
+    } catch (e) {
+      print('Error saving data to Firebase: $e');
+      // Handle error as needed
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +180,7 @@ class _MyFormState extends State<MyForm> {
                   ],
                 ),
                 child: TextFormField(
-                  controller: _numController,
+                  controller: _clientController,
                   enabled: true,
                   decoration: InputDecoration(
                     hintText: "Client",
@@ -175,7 +224,7 @@ class _MyFormState extends State<MyForm> {
                   ],
                 ),
                 child: TextFormField(
-                  controller: _numController,
+                  controller: _dateController,
                   enabled: true,
                   decoration: InputDecoration(
                     hintText: "Selectionner la date",
@@ -219,7 +268,7 @@ class _MyFormState extends State<MyForm> {
                   ],
                 ),
                 child: TextFormField(
-                  controller: _numController,
+                  controller: _heureController,
                   enabled: true,
                   decoration: InputDecoration(
                     hintText: "Heure de rendz_vous",
@@ -263,7 +312,7 @@ class _MyFormState extends State<MyForm> {
                   ],
                 ),
                 child: TextFormField(
-                  controller: _numController,
+                  controller: _objetController,
                   enabled: true,
                   decoration: InputDecoration(
                     hintText: "objet",
@@ -307,7 +356,7 @@ class _MyFormState extends State<MyForm> {
                   ],
                 ),
                 child: TextFormField(
-                  controller: _numController,
+                  controller: _vehiculeController,
                   enabled: true,
                   decoration: InputDecoration(
                     hintText: "Vehicule exitant",
@@ -351,7 +400,7 @@ class _MyFormState extends State<MyForm> {
                   ],
                 ),
                 child: TextFormField(
-                  controller: _numController,
+                  controller: _immaController,
                   enabled: true,
                   decoration: InputDecoration(
                     hintText: "Nouveau vehicule (immatriculation)",
@@ -401,10 +450,15 @@ class _MyFormState extends State<MyForm> {
                     SizedBox(width: 5),
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: (){
+                          // Call the saveData method when the button is pressed
+                          
+                                 saveDataToFirebase();
+        
+
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => Detailspage()),
+                            MaterialPageRoute(builder: (context) => StatPage()),
                           );
                         },
                         style: ElevatedButton.styleFrom(
@@ -414,7 +468,7 @@ class _MyFormState extends State<MyForm> {
                           ),
                         ),
                         child: Text(
-                          'Fermer',
+                          'Terminer',
                           style: TextStyle(
                             fontSize: 14.0,
                             color: Colors.white,
