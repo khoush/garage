@@ -5,6 +5,7 @@ import 'package:msgarage/screens/client.dart';
 import 'package:msgarage/screens/fourthpage.dart';
 import 'package:msgarage/screens/profilepage.dart';
 import 'package:msgarage/screens/secondpage.dart';
+import 'package:msgarage/screens/test.dart';
 
 
 
@@ -24,7 +25,7 @@ class _StatPageState extends State<StatPage> {
   final List<Widget> _pages = [
     Acceuil(),
     SecondPage(),
-    ClientPage(),
+    test(),
     FourthPage(),
     ProfilePage(),
     
