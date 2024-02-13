@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart'; 
 
 import 'client.dart';
 import 'navbar.chat.dart';
@@ -45,7 +47,7 @@ class _MyFormState extends State<MyForm> {
   TextEditingController _demandeController = TextEditingController();
   TextEditingController _datedController = TextEditingController();
   TextEditingController _dateController = TextEditingController();
-  TextEditingController _heureController = TextEditingController();
+TextEditingController _heureController = TextEditingController(text: '00:00');
   TextEditingController _clientController = TextEditingController();
   TextEditingController _objetController = TextEditingController();
   TextEditingController _vehiculeController = TextEditingController();
@@ -53,6 +55,48 @@ class _MyFormState extends State<MyForm> {
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   XFile? _pickedFile;
+
+     late DateTime _selectedDate;
+     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  _MyFormState() {
+    // Initialize _selectedDate with the current date
+    _selectedDate = DateTime.now();
+  }
+
+
+
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+        _dateController.text = DateFormat('yyyy-MM-dd').format(_selectedDate);
+      });
+    }
+  }
+
+  Future<void> _selectTime(BuildContext context) async {
+  TimeOfDay? picked = await showTimePicker(
+    context: context,
+    initialTime: TimeOfDay.now(),
+  );
+
+  if (picked != null) {
+    setState(() {
+      _heureController.text = picked.format(context);
+    });
+  }
+}
+
+
 
   Future<int> getLatestDemandNumber() async {
     try {
@@ -267,49 +311,55 @@ class _MyFormState extends State<MyForm> {
                 ),
               ),
               SizedBox(height: 10,),
-              Container(
-                width: 350,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.white.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: TextFormField(
-                  controller: _dateController,
-                  enabled: true,
-                  decoration: InputDecoration(
-                    hintText: "Selectionner la date",
-                    hintStyle: TextStyle(
-                      fontSize: 14.0,
-                      color: Colors.grey,
-                    ),
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                    suffixIcon: Icon(
-                      Icons.calendar_today,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ),
-              ),
+             Container(
+  width: 350,
+  height: 50,
+  decoration: BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(20),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.white.withOpacity(0.5),
+        spreadRadius: 2,
+        blurRadius: 5,
+        offset: Offset(0, 3),
+      ),
+    ],
+  ),
+  child: TextFormField(
+    controller: _dateController,
+    enabled: true,
+    decoration: InputDecoration(
+      hintText: "Selectionner la date",
+      hintStyle: TextStyle(
+        fontSize: 14.0,
+        color: Colors.grey,
+      ),
+      border: UnderlineInputBorder(
+        borderSide: BorderSide(
+          color: Colors.white,
+          width: 1,
+        ),
+      ),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(
+          color: Colors.white,
+          width: 1,
+        ),
+      ),
+      suffixIcon: InkWell(
+        onTap: () {
+          _selectDate(context); // Define this function to show the date picker
+        },
+        child: Icon(
+          Icons.calendar_today,
+          color: Colors.grey,
+        ),
+      ),
+    ),
+  ),
+),
+
               SizedBox(height: 10,),
               Container(
                 width: 350,
@@ -329,8 +379,11 @@ class _MyFormState extends State<MyForm> {
                 child: TextFormField(
                   controller: _heureController,
                   enabled: true,
+                   onTap: () {
+                     _selectTime(context);
+                             },
                   decoration: InputDecoration(
-                    hintText: "Heure de rendz_vous",
+                    hintText: "Heure de rendez_vous",
                     hintStyle: TextStyle(
                       fontSize: 14.0,
                       color: Colors.grey,

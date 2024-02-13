@@ -115,6 +115,8 @@ class _SecondPageState extends State<SecondPage> {
       max: 100.0,
       divisions: 100,
       label: '$sliderValue1',
+      activeColor: Colors.green,
+      inactiveColor: Colors.grey,
       onChangeEnd: (double value) {
         // Add any specific actions when the slider interaction ends
       },
@@ -148,6 +150,8 @@ class _SecondPageState extends State<SecondPage> {
                   max: 100.0,
                   divisions: 100,
                   label: '$sliderValue2',
+                  activeColor: Colors.green,
+      inactiveColor: Colors.grey,
                 ),
               ],
             ),
@@ -178,6 +182,8 @@ class _SecondPageState extends State<SecondPage> {
                   max: 100.0,
                   divisions: 100,
                   label: '$sliderValue3',
+                  activeColor: Colors.green,
+      inactiveColor: Colors.grey,
                 ),
               ],
             ),
@@ -206,6 +212,8 @@ class _SecondPageState extends State<SecondPage> {
           max: 100.0,
           divisions: 100,
           label: '$sliderValue4',
+          activeColor: Colors.green,
+      inactiveColor: Colors.grey,
         ),
         if (sliderValue4 == 100.0)
           Positioned(
