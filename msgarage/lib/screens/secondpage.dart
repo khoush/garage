@@ -12,10 +12,13 @@ class SecondPage extends StatefulWidget {
 class _SecondPageState extends State<SecondPage> {
   List<String> mat = ['2022', '2057', '2000'];
   String selectedMat = '2022';
+
   double sliderValue1 = 0.0;
-  double sliderValue2 = 0.0;
+
+
+  double sliderValue2 = 50.0;
   double sliderValue3 = 0.0;
-    double sliderValue4 = 0.0;
+    double sliderValue4 = 100.0;
 
 
 
@@ -44,7 +47,8 @@ class _SecondPageState extends State<SecondPage> {
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.
+          start,
           children: [
             // Dropdown Field
             DropdownButtonFormField<String>(
@@ -65,6 +69,28 @@ class _SecondPageState extends State<SecondPage> {
                 border: OutlineInputBorder(),
               ),
             ),
+            SizedBox(height: 10,),
+           Row(
+             mainAxisAlignment: MainAxisAlignment.start,
+             children: [
+               Container(
+                 padding: EdgeInsets.all(8.0),
+                 decoration: BoxDecoration(
+                   borderRadius: BorderRadius.circular(8.0),
+                   color: Color(0xFF002E7F),
+                 ),
+                 child: Text(
+                   '$selectedMat',
+                   style: TextStyle(
+                     color: Colors.white,
+                     fontSize: 16.0,
+                     fontWeight: FontWeight.bold,
+                   ),
+                 ),
+               ),
+             ],
+           ),
+
             SizedBox(height: 40.0),
 
             // Slider 1

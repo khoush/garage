@@ -12,8 +12,6 @@ class Acceuil extends StatefulWidget {
 }
 
 class _AcceuilState extends State<Acceuil> {
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,7 +52,8 @@ class _AcceuilState extends State<Acceuil> {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
 
-          List<Map<String, dynamic>> vehiclesData = snapshot.data!.docs.map((DocumentSnapshot document) {
+          List<Map<String, dynamic>> vehiclesData = snapshot.data!.docs
+              .map((DocumentSnapshot document) {
             return document.data() as Map<String, dynamic>;
           }).toList();
 
@@ -71,25 +70,76 @@ class _AcceuilState extends State<Acceuil> {
                   ),
                 ),
               ),
-              for (var vehicleData in vehiclesData)
-                Card(
-                  elevation: 5,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: 100,
-                        width: double.infinity,
-                        child: Image.network(
-                          vehicleData['imageUrl'] ?? '', 
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                     
-                    ],
-                  ),
+             for (var vehicleData in vehiclesData)
+  Card(
+    elevation: 1,
+    child: Container(
+      height: 120,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: NetworkImage(vehicleData['imageUrl'] ?? ''),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 7), // Spacer to push the text below the image
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Vehicule      :     ${vehicleData['num']}',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF002E7F),
                 ),
-                
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                ' ${vehicleData['Etat']}',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Text(
+                'Entrée n : ${vehicleData['num']}',
+                style: TextStyle(
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(width: 10.0), // Adjust the space between texts as needed
+              Text(
+                " Date d'entrée : ${vehicleData['date']}",
+                style: TextStyle(
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+        ),
+            // Add more fields as needed
+          ],
+        ),
+      ),
+    ),
+  ),
+
               GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -122,47 +172,47 @@ class _AcceuilState extends State<Acceuil> {
                 ),
               ),
               SizedBox(height: 150,),
-               Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute<void>(
-                            builder: (BuildContext context) => Rendezvous(),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 22, horizontal: 30),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          color: Color(0xFF002E7F),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder: (BuildContext context) => Rendezvous(),
                         ),
-                        child: const Text(
-                          'Prendre un rendez-vous',
-                          style: TextStyle(
-                            inherit: false,
-                            fontSize: 17,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
-                          ),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 22, horizontal: 30),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: Color(0xFF002E7F),
+                      ),
+                      child: const Text(
+                        'Prendre un rendez-vous',
+                        style: TextStyle(
+                          inherit: false,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 20),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute<void>(
-                            builder: (BuildContext context) => ClientPage(),
-                          ),
-                        );
-                      },
-                    child:Container(
+                  ),
+                  const SizedBox(width: 20),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder: (BuildContext context) => ClientPage(),
+                        ),
+                      );
+                    },
+                    child: Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
@@ -173,9 +223,9 @@ class _AcceuilState extends State<Acceuil> {
                         color: Colors.white,
                       ),
                     ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
+              ),
             ],
           );
         },

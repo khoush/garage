@@ -23,6 +23,13 @@ class Rendezvous extends StatelessWidget {
           ),
         ),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back,
+          color: Colors.white,),
+          onPressed: () {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => StatPage()));
+          },
+        ),
       ),
       body: MyForm(),
     );

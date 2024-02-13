@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:msgarage/screens/conversation.dart';
+import 'package:msgarage/screens/navbar.chat.dart';
 
 class ClientPage extends StatelessWidget {
   @override
@@ -72,7 +74,7 @@ class ChatScreenState extends State<ChatScreen> {
           icon: Icon(Icons.arrow_back,
           color: Colors.white,),
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => StatPage()));
           },
         ),
         actions: <Widget>[
@@ -80,9 +82,9 @@ class ChatScreenState extends State<ChatScreen> {
             icon: Icon(Icons.chat,
             color: Colors.white,
             ),
-            onPressed: () async {
-              
-            },
+           onPressed: () {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => ConversationScreen()));
+          },
           ),
         ],
       ),
