@@ -91,39 +91,58 @@ class ChatScreenState extends State<ChatScreen> {
       body: Column(
         children: <Widget>[
           Expanded(
-            
             child: StreamBuilder<QuerySnapshot>(
-  stream: _firestore.collection('messages')
-    .where('sender', isEqualTo: _user!.email)
-    .orderBy('timestamp', descending: true)
-    .snapshots(),
+              stream: _firestore
+                  .collection('messages')
+                  .where('sender', isEqualTo: _user!.email)
+                  .orderBy('timestamp', descending: true)
+                  .snapshots(),
+              builder: (context, userSnapshot) {
+                if (!userSnapshot.hasData) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
 
-  builder: (context, snapshot) {
-    if (!snapshot.hasData) {
-      return Center(
-        child: CircularProgressIndicator(),
-      );
-    }
+                var userMessages = userSnapshot.data!.docs.reversed;
 
-    var messages = snapshot.data!.docs.reversed;
+                return StreamBuilder<QuerySnapshot>(
+                  stream: _firestore
+                      .collection('admin_messages')
+                      .doc(_user!.uid)
+                      .collection('messages')
+                      .orderBy('timestamp', descending: true)
+                      .snapshots(),
+                  builder: (context, adminSnapshot) {
+                    if (!adminSnapshot.hasData) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
 
-    List<Widget> messageWidgets = [];
-    for (var message in messages) {
-      var messageText = message['text'];
-      var messageSender = message['sender'];
-      var imageUrl = message['imageUrl'];
+                    var adminMessages = adminSnapshot.data!.docs.reversed;
 
-      var messageWidget = MessageWidget(messageSender, messageText, imageUrl);
-      messageWidgets.add(messageWidget);
-    }
+                    var allMessages = [...userMessages, ...adminMessages];
 
-    return ListView(
-      reverse: true,
-      children: messageWidgets,
-    );
-  },
-),
+                    List<Widget> messageWidgets = [];
+                    for (var message in allMessages) {
+                      var messageText = message['text'];
+                      var messageSender = message['sender'];
+                      var imageUrl = message['imageUrl'];
 
+                      var messageWidget =
+                          MessageWidget(messageSender, messageText, imageUrl);
+                      messageWidgets.add(messageWidget);
+                    }
+
+                    return ListView(
+                      reverse: true,
+                      children: messageWidgets,
+                    );
+                  },
+                );
+              },
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),

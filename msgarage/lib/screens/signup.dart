@@ -21,12 +21,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<void> addUserToFirestore(
-      String userId, String email, String nom, String username) async {
+      String userId, String email, String nom, String username , String role) async {
     try {
       await FirebaseFirestore.instance.collection('users').doc(userId).set({
         'email': email,
         'nom': nom,
         'username': username,
+        'role': role,
       });
     } catch (e) {
       print("Erreur lors de l'ajout de l'utilisateur à Firestore : $e");
@@ -121,6 +122,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           _emailController.text,
                           _nomController.text,
                           _nomutilController.text,
+                          'user',
                         );
                       } catch (e) {
                         // Handle registration errors
@@ -197,8 +199,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 7),
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      margin: EdgeInsets.symmetric(vertical: 1),
+      padding: EdgeInsets.symmetric(horizontal: 1),
       child: TextField(
         obscureText: widget.isPassword,
         style: TextStyle(color: Colors.black),

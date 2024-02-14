@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:msgarage/components/buton.dart';
+import 'package:msgarage/screens/admin/admin.dart';
 
 import 'package:msgarage/screens/navbar.chat.dart';
 import 'package:msgarage/screens/signup.dart';
@@ -13,8 +15,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  List<String> companies = ['garage', 'garage1', 'garage2'];
-  String selectedCompany = 'garage';
+ 
 
   FocusNode emailFocusNode = FocusNode();
   FocusNode passwordFocusNode = FocusNode();
@@ -23,26 +24,43 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool isLoading = false;
 
-  void signUserIn(BuildContext context) async {
-    setState(() {
-      isLoading = true;
-    });
+ void signUserIn(BuildContext context) async {
+  setState(() {
+    isLoading = true;
+  });
 
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
-      ).then((value) {
+  try {
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: emailController.text,
+      password: passwordController.text,
+    ).then((value) async {
+      // Récupérer le rôle de l'utilisateur depuis la base de données Firestore
+      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(value.user!.uid)
+          .get();
+
+String userRole = (userSnapshot.data() as Map<String, dynamic>)['role'] ?? 'user';
+
+      // Vérifier le rôle de l'utilisateur
+      if (userRole == 'admin') {
+        // Rediriger vers la page d'administration
+        // Utilisez Navigator.of(context).pushReplacement pour remplacer l'écran actuel
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => AdminPage()));
+      } else {
+        // Rediriger vers la page utilisateur normale
         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => StatPage()));
-      });
-    } on FirebaseAuthException {
-      wrongMessage(); // Call the method to show the error message
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
-    }
+      }
+    });
+  } on FirebaseAuthException {
+    wrongMessage(); // Appeler la méthode pour afficher le message d'erreur
+  } finally {
+    setState(() {
+      isLoading = false;
+    });
   }
+}
+
 
   void wrongMessage() {
     showDialog(
@@ -124,17 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   focusNode: passwordFocusNode,
                   controller: passwordController,
                 ),
-                CustomDropdownField(
-                  label: 'Societe',
-                  items: companies,
-                  selectedValue: selectedCompany,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedCompany = value.toString();
-                    });
-                  },
-                  prefixIcon: Icons.business,
-                ),
+                
                 SizedBox(height: 50),
                 MyButton(
                   onTap: () {
@@ -224,49 +232,3 @@ class _CustomTextFieldState extends State<CustomTextField> {
   }
 }
 
-class CustomDropdownField extends StatelessWidget {
-  final String label;
-  final List<String> items;
-  final String selectedValue;
-  final ValueChanged<String?>? onChanged;
-  final IconData? prefixIcon;
-
-  const CustomDropdownField({
-    required this.label,
-    required this.items,
-    required this.selectedValue,
-    required this.onChanged,
-    this.prefixIcon,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 1),
-      padding: EdgeInsets.symmetric(horizontal: 1),
-      child: DropdownButtonFormField(
-        value: selectedValue,
-        items: items.map((item) {
-          return DropdownMenuItem(
-            value: item,
-            child: Text(item),
-          );
-        }).toList(),
-        onChanged: onChanged,
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: TextStyle(color: Colors.grey, fontSize: 12),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey),
-          ),
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey),
-          ),
-          prefixIcon: prefixIcon != null
-              ? Icon(prefixIcon, color: Color(0xFF003888))
-              : null,
-        ),
-      ),
-    );
-  }
-}
