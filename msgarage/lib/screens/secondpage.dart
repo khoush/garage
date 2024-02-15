@@ -25,17 +25,16 @@ class _SecondPageState extends State<SecondPage> {
     _fetchImmatriculations();
   }
 
+  late QuerySnapshot<Map<String, dynamic>> snapshot;
   Future<void> _fetchImmatriculations() async {
     try {
       // Récupérer la collection 'véhicules' depuis Firestore
-      QuerySnapshot<Map<String, dynamic>> snapshot =
-          await _firestore.collection('vehicules').get();
+      snapshot = await _firestore.collection('vehicules').get();
 
       // Parcourir les documents de la collection
       snapshot.docs.forEach((DocumentSnapshot<Map<String, dynamic>> doc) {
         // Extraire l'immatriculation du document
         String immatriculation = doc.get('num');
-        String etat = doc.get('Etat');
 
         // Ajouter l'immatriculation à la liste
         setState(() {
@@ -44,48 +43,89 @@ class _SecondPageState extends State<SecondPage> {
             // Si la liste n'est pas vide, initialiser selectedMat avec la première valeur
             selectedMat = mat.first;
           }
-
+        });
+        if (doc.get('num') == selectedMat) {
           // Mettre à jour les sliders en fonction de l'état
-          if (etat == 'Reception') {
+          if (doc.get('Etat') == 'Reception') {
             sliderValue1 = 0.0;
-          } else if (etat == 'Devis') {
+          } else if (doc.get('Etat') == 'Devis') {
             sliderValue1 = 50.0;
-          } else if (etat == 'Validation') {
+          } else if (doc.get('Etat') == 'Validation') {
             sliderValue1 = 100.0;
           }
-          if (etat == 'Achat') {
+          if (doc.get('Etat') == 'Achat') {
             sliderValue2 = 0.0;
-          } else if (etat == 'En attente des pieces') {
+          } else if (doc.get('Etat') == 'En attente des pieces') {
             sliderValue2 = 50.0;
-          } else if (etat == 'Carrosserie et dressage') {
+          } else if (doc.get('Etat') == 'Carrosserie et dressage') {
             sliderValue2 = 100.0;
           }
-          if (etat == 'Preparation et peinture') {
+          if (doc.get('Etat') == 'Preparation et peinture') {
             sliderValue3 = 0.0;
-          } else if (etat == 'Montage') {
+          } else if (doc.get('Etat') == 'Montage') {
             sliderValue3 = 50.0;
-          } else if (etat == 'Lustrage et finition') {
+          } else if (doc.get('Etat') == 'Lustrage et finition') {
             sliderValue3 = 100.0;
           }
-          if (etat == 'Lavage/Livraison') {
+          if (doc.get('Etat') == 'Lavage/Livraison') {
             sliderValue4 = 0.0;
-          } else if (etat == '') {
+          } else if (doc.get('Etat') == '') {
             sliderValue4 = 100.0;
           }
-        });
+        }
       });
-
     } catch (e) {
       print('Erreur lors de la récupération des immatriculations : $e');
     }
   }
 
+  //lazemha to5rej mn function athika 5ater athi enty ta3mlilha fi initianlistion donc howa resultat yod5el beha w ma3awdetch refraich tab9a hiya naffsha!!
+
+  void test() {
+    sliderValue1 = 0.0;
+    sliderValue2 = 0.0;
+    sliderValue3 = 0.0;
+    sliderValue4 = 0.0;
+
+    snapshot.docs.forEach((DocumentSnapshot<Map<String, dynamic>> doc) {
+      if (doc.get('num') == selectedMat) {
+        // Mettreon mtea slider baad test tarjaa le 0 ?eyy bch tab9a ken resultat jdida behy fhemtek yatyk saha ena makhamtesh feha ama najmou mithel naamlouha par exemple moush yarj3ou lel 0 aka l point lekbira heki tetnaha completement w ela tarjaa le 0 khyr ?lmochkla howa slider manetssawerch thama faza bch tna7i beha athika!! aahfhemtek
+        if (doc.get('Etat') == 'Reception') {
+          sliderValue1 = 0.0;
+        } else if (doc.get('Etat') == 'Devis') {
+          sliderValue1 = 50.0;
+        } else if (doc.get('Etat') == 'Validation') {
+          sliderValue1 = 100.0;
+        }
+        if (doc.get('Etat') == 'Achat') {
+          sliderValue2 = 0.0;
+        } else if (doc.get('Etat') == 'En attente des pieces') {
+          sliderValue2 = 50.0;
+        } else if (doc.get('Etat') == 'Carrosserie et dressage') {
+          sliderValue2 = 100.0;
+        }
+        if (doc.get('Etat') == 'Preparation et peinture') {
+          sliderValue3 = 0.0;
+        } else if (doc.get('Etat') == 'Montage') {
+          sliderValue3 = 50.0;
+        } else if (doc.get('Etat') == 'Lustrage et finition') {
+          sliderValue3 = 100.0;
+        }
+        if (doc.get('Etat') == 'Lavage/Livraison') {
+          sliderValue4 = 0.0;
+        } else if (doc.get('Etat') == '') {
+          sliderValue4 = 100.0;
+        }
+      }
+    });
+  } //hna manech  nraj3ou fe les valeur legdom 0!!!!
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF002E7F),
-        title: Text(
+        backgroundColor: const Color(0xFF002E7F),
+        title: const Text(
           'Avancement',
           style: TextStyle(
             color: Colors.white,
@@ -95,14 +135,14 @@ class _SecondPageState extends State<SecondPage> {
         ),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.menu, color: Colors.white),
+          icon: const Icon(Icons.menu, color: Colors.white),
           onPressed: () {
             // Add your logic to handle the menu icon click here
           },
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -112,7 +152,9 @@ class _SecondPageState extends State<SecondPage> {
               onChanged: (String? newValue) {
                 setState(() {
                   selectedMat = newValue!;
+                  print(selectedMat); //haw ybadel !!
                 });
+                test();
               },
               items: mat.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
@@ -120,24 +162,24 @@ class _SecondPageState extends State<SecondPage> {
                   child: Text(value),
                 );
               }).toList(),
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Immatriculation',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8.0),
-                    color: Color(0xFF002E7F),
+                    color: const Color(0xFF002E7F),
                   ),
                   child: Text(
                     '$selectedMat',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16.0,
                       fontWeight: FontWeight.bold,
@@ -147,23 +189,23 @@ class _SecondPageState extends State<SecondPage> {
               ],
             ),
 
-            SizedBox(height: 40.0),
+            const SizedBox(height: 40.0),
 
             // Slider 1
             Column(
               children: [
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('Reception',
-                        style:
-                            TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 12)),
                     Text('Devis',
-                        style:
-                            TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 12)),
                     Text('Validation',
-                        style:
-                            TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 12)),
                   ],
                 ),
                 Slider(
@@ -185,12 +227,12 @@ class _SecondPageState extends State<SecondPage> {
                 ),
               ],
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
 
             // Slider 2
             Column(
               children: [
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('Achat',
@@ -220,12 +262,12 @@ class _SecondPageState extends State<SecondPage> {
                 ),
               ],
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
 
             // Slider 3
             Column(
               children: [
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('Preparation \n et peinture',
@@ -255,16 +297,16 @@ class _SecondPageState extends State<SecondPage> {
                 ),
               ],
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
 
             Column(
               children: [
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('Lavage/Livraison',
-                        style:
-                            TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 12)),
                     Text(''),
                     Text(''),
                   ],
@@ -286,7 +328,7 @@ class _SecondPageState extends State<SecondPage> {
                       inactiveColor: Colors.grey,
                     ),
                     if (sliderValue4 == 100.0)
-                      Positioned(
+                      const Positioned(
                         right: 8.0, // Adjust the position as needed
                         top: -5.0, // Adjust the position as needed
                         child: Icon(
@@ -299,7 +341,7 @@ class _SecondPageState extends State<SecondPage> {
                 ),
               ],
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -317,7 +359,7 @@ class _SecondPageState extends State<SecondPage> {
                         vertical: 20, horizontal: 25),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(30),
-                      color: Color(0xFF002E7F),
+                      color: const Color(0xFF002E7F),
                     ),
                     child: const Text(
                       'Prendre un rendez-vous',
@@ -344,7 +386,7 @@ class _SecondPageState extends State<SecondPage> {
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(30),
-                      color: Color(0xFF002E7F),
+                      color: const Color(0xFF002E7F),
                     ),
                     child: const Icon(
                       Icons.chat,

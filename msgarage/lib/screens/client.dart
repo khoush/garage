@@ -39,11 +39,13 @@ class ChatScreenState extends State<ChatScreen> {
     String text = _messageController.text.trim();
 
     if (text.isNotEmpty || imageUrl != null) {
-      await _firestore.collection('messages').add({
+      await _firestore.collection('all_messages').add({
         'text': text,
         'sender': _user!.email,
         'imageUrl': imageUrl,
         'timestamp': FieldValue.serverTimestamp(),
+        'recipient': 'admin',
+        'role': 'client',
       });
 
       _messageController.clear();
@@ -71,20 +73,23 @@ class ChatScreenState extends State<ChatScreen> {
           ),
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back,
-          color: Colors.white,),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
           onPressed: () {
             Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => StatPage()));
           },
         ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.chat,
-            color: Colors.white,
+            icon: Icon(
+              Icons.chat,
+              color: Colors.white,
             ),
-           onPressed: () {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => ConversationScreen()));
-          },
+            onPressed: () {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => ConversationScreen()));
+            },
           ),
         ],
       ),
@@ -93,53 +98,32 @@ class ChatScreenState extends State<ChatScreen> {
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: _firestore
-                  .collection('messages')
-                  .where('sender', isEqualTo: _user!.email)
+                  .collection('all_messages')
+                  .where('recipient', isEqualTo: 'client')
                   .orderBy('timestamp', descending: true)
                   .snapshots(),
-              builder: (context, userSnapshot) {
-                if (!userSnapshot.hasData) {
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
                   return Center(
                     child: CircularProgressIndicator(),
                   );
                 }
 
-                var userMessages = userSnapshot.data!.docs.reversed;
+                var messages = snapshot.data!.docs.reversed;
 
-                return StreamBuilder<QuerySnapshot>(
-                  stream: _firestore
-                      .collection('admin_messages')
-                      .doc(_user!.uid)
-                      .collection('messages')
-                      .orderBy('timestamp', descending: true)
-                      .snapshots(),
-                  builder: (context, adminSnapshot) {
-                    if (!adminSnapshot.hasData) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
+                List<Widget> messageWidgets = [];
+                for (var message in messages) {
+                  var messageText = message['text'];
+                  var messageSender = message['sender'];
+                  var imageUrl = message['imageUrl'];
 
-                    var adminMessages = adminSnapshot.data!.docs.reversed;
+                  var messageWidget = MessageWidget(messageSender, messageText, imageUrl);
+                  messageWidgets.add(messageWidget);
+                }
 
-                    var allMessages = [...userMessages, ...adminMessages];
-
-                    List<Widget> messageWidgets = [];
-                    for (var message in allMessages) {
-                      var messageText = message['text'];
-                      var messageSender = message['sender'];
-                      var imageUrl = message['imageUrl'];
-
-                      var messageWidget =
-                          MessageWidget(messageSender, messageText, imageUrl);
-                      messageWidgets.add(messageWidget);
-                    }
-
-                    return ListView(
-                      reverse: true,
-                      children: messageWidgets,
-                    );
-                  },
+                return ListView(
+                  reverse: true,
+                  children: messageWidgets,
                 );
               },
             ),
@@ -149,8 +133,10 @@ class ChatScreenState extends State<ChatScreen> {
             child: Row(
               children: <Widget>[
                 IconButton(
-                  icon: Icon(Icons.camera,
-                  color: Color(0xFF002E7F),),
+                  icon: Icon(
+                    Icons.camera,
+                    color: Color(0xFF002E7F),
+                  ),
                   onPressed: () => _pickImage(ImageSource.camera),
                 ),
                 Expanded(
@@ -162,8 +148,10 @@ class ChatScreenState extends State<ChatScreen> {
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.send,
-                  color: Color(0xFF002E7F),),
+                  icon: Icon(
+                    Icons.send,
+                    color: Color(0xFF002E7F),
+                  ),
                   onPressed: () => _sendMessage(),
                 ),
               ],

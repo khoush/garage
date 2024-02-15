@@ -5,14 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 
-
-
-class AdminPage extends StatefulWidget {
-  @override
-  State<AdminPage> createState() => _AdminPageState();
-}
-
-class _AdminPageState extends State<AdminPage> {
+class AdminChatPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -23,147 +16,139 @@ class _AdminPageState extends State<AdminPage> {
 
 class AdminChatScreen extends StatefulWidget {
   @override
-  _AdminChatScreenState createState() => _AdminChatScreenState();
+  State createState() => AdminChatScreenState();
 }
 
-class _AdminChatScreenState extends State<AdminChatScreen> {
+class AdminChatScreenState extends State<AdminChatScreen> {
   final TextEditingController _messageController = TextEditingController();
-    final ImagePicker _imagePicker = ImagePicker();
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final ImagePicker _imagePicker = ImagePicker();
 
-  late User _adminUser;
-  late String _selectedUserId;
-void _pickImage(ImageSource source) async {
-    final pickedFile = await _imagePicker.pickImage(source: source);
+  late User _user;
+  late List<String> _availableUsers;
 
-    if (pickedFile != null) {
-      _sendMessage(imageUrl: pickedFile.path);
-    }
-  }
-   void _sendMessage({String? imageUrl}) async {
-    String text = _messageController.text.trim();
-
-    if (text.isNotEmpty || imageUrl != null) {
-      await _firestore.collection('messages').add({
-        'text': text,
-        
-        'imageUrl': imageUrl,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
-
-      _messageController.clear();
-    }
-  }
   @override
   void initState() {
     super.initState();
-    _adminUser = _auth.currentUser!;
-    _selectedUserId = "9vft2CVTjGeA2IWNWv6PlFUQayH3"; // Initialiser avec l'ID de l'utilisateur sélectionné
+    _user = _auth.currentUser!;
+    _availableUsers = [];
+    _getAvailableUsers();
   }
 
-  void _sendMessageToUser() async {
+  Future<void> _getAvailableUsers() async {
+    try {
+      QuerySnapshot usersSnapshot =
+          await FirebaseFirestore.instance.collection('users').get();
+
+      setState(() {
+        _availableUsers = usersSnapshot.docs.map((user) => user.id).toList();
+      });
+    } catch (e) {
+      print('Error fetching available users: $e');
+    }
+  }
+
+  void _sendMessage({String? imageUrl, required String recipient}) async {
     String text = _messageController.text.trim();
 
-    if (_selectedUserId.isNotEmpty && text.isNotEmpty) {
-      await _firestore
-          .collection('admin_messages')
-          .doc(_selectedUserId)
-          .collection('messages')
-          .add({
+    if (text.isNotEmpty || imageUrl != null) {
+      await _firestore.collection('all_messages').add({
         'text': text,
-        'sender': 'admin',
+        'sender': _user.email,
+        'imageUrl': imageUrl,
         'timestamp': FieldValue.serverTimestamp(),
+        'recipient': recipient,
+        'role': 'admin',
       });
 
       _messageController.clear();
     }
   }
+
+  void _pickImage(ImageSource source) async {
+    final pickedFile = await _imagePicker.pickImage(source: source);
+
+    if (pickedFile != null) {
+      _sendMessage(imageUrl: pickedFile.path, recipient: _selectedUser);
+    }
+  }
+
+  String _selectedUser = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Admin Chat'),
+        backgroundColor: Color(0xFF002E7F),
+        title: Text(
+          'Admin Chat',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+          ),
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.people,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              _showAvailableUsersDialog();
+            },
+          ),
+        ],
       ),
       body: Column(
         children: <Widget>[
-          // Liste des utilisateurs
-          StreamBuilder<QuerySnapshot>(
-            stream: _firestore.collection('users').snapshots(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return CircularProgressIndicator();
-              }
-
-              var users = snapshot.data!.docs;
-              List<DropdownMenuItem<String>> userDropdownItems = [];
-
-              for (var user in users) {
-                var userId = user.id;
-                var userName = user['nom'];
-
-                var dropdownItem =
-                    DropdownMenuItem<String>(child: Text(userName), value: userId);
-
-                userDropdownItems.add(dropdownItem);
-              }
-
-              return DropdownButton<String>(
-                value: _selectedUserId,
-                items: userDropdownItems,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedUserId = value!;
-                  });
-                },
-              );
-            },
-          ),
-          // Liste des messages de l'utilisateur sélectionné
           Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: _firestore
-                  .collection('admin_messages')
-                  .doc(_selectedUserId)
-                  .collection('messages')
-                  .orderBy('timestamp', descending: true)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(child: CircularProgressIndicator());
-                }
+            child: _selectedUser.isNotEmpty
+                ? StreamBuilder<QuerySnapshot>(
+                    stream: _firestore
+                        .collection('all_messages')
+                        .where('recipient', isEqualTo: _selectedUser)
+                        .orderBy('timestamp', descending: true)
+                        .snapshots(),//mad5alch hna asl
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
 
-                var messages = snapshot.data!.docs;
-                List<Widget> messageWidgets = [];
+                      var messages = snapshot.data!.docs.reversed;
 
-                for (var message in messages) {
-                  var messageText = message['text'];
-                  var messageSender = message['sender'];
-                  var imageUrl = message['imageUrl'];
+                      List<Widget> messageWidgets = [];
+                      for (var message in messages) {
+                        var messageText = message['text'];
+                        var messageSender = message['sender'];
+                        var imageUrl = message['imageUrl'];
 
+                        var messageWidget =
+                            MessageWidget(messageSender, messageText, imageUrl);
+                        messageWidgets.add(messageWidget);
+                      }
 
-                  var messageWidget =
-                      MessageWidget(messageSender, messageText, null);
-                  messageWidgets.add(messageWidget);
-                }
-
-                return ListView(
-                  reverse: true,
-                  children: messageWidgets,
-                );
-              },
-            ),
+                      return ListView(
+                        reverse: true,
+                        children: messageWidgets,
+                      );
+                    },
+                  )
+                : Center(
+                    child: Text('Select a user to start a conversation.'),
+                  ),
           ),
-          // Zone de saisie de message
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: <Widget>[
-                 IconButton(
-                  icon: Icon(Icons.camera,
-                  color: Color(0xFF002E7F),),
+                IconButton(
+                  icon: Icon(
+                    Icons.camera,
+                    color: Color(0xFF002E7F),
+                  ),
                   onPressed: () => _pickImage(ImageSource.camera),
                 ),
                 Expanded(
@@ -175,15 +160,63 @@ void _pickImage(ImageSource source) async {
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.send,
-                  color: Color(0xFF002E7F),),
-                  onPressed: () => _sendMessage(),
+                  icon: Icon(
+                    Icons.send,
+                    color: Color(0xFF002E7F),
+                  ),
+                  onPressed: () {
+                    if (_selectedUser.isNotEmpty) {
+                      _sendMessage(recipient: _selectedUser);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content:
+                              Text('Please select a user to send a message.'),
+                        ),
+                      );
+                    }
+                  },
                 ),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  void _showAvailableUsersDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Available Users'),
+          content: _availableUsers.isNotEmpty
+              ? ListView.builder(
+                  itemCount: _availableUsers.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(_availableUsers[index]),
+                      onTap: () {
+                        setState(() {
+                          _selectedUser = _availableUsers[index];
+                        });
+                        Navigator.of(context).pop();
+                      },
+                    );
+                  },
+                )
+              : Text('No available users.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

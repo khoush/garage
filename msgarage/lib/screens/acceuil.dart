@@ -1,8 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:msgarage/screens/ajoutpage.dart';
 import 'package:msgarage/screens/avancement.dart';
 import 'package:msgarage/screens/client.dart';
+import 'package:msgarage/screens/devis.dart';
 import 'package:msgarage/screens/rendez_vous.dart';
+
 
 class Acceuil extends StatefulWidget {
   const Acceuil({Key? key});
@@ -70,76 +73,74 @@ class _AcceuilState extends State<Acceuil> {
                   ),
                 ),
               ),
-             for (var vehicleData in vehiclesData)
-  Card(
-    elevation: 1,
-    child: Container(
-      height: 120,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: NetworkImage(vehicleData['imageUrl'] ?? ''),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 7), // Spacer to push the text below the image
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Vehicule      :     ${vehicleData['num']}',
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF002E7F),
+              for (var vehicleData in vehiclesData)
+                Card(
+                  elevation: 1,
+                  child: Container(
+                    height: 120,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(vehicleData['imageUrl'] ?? ''),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 7),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'Véhicule: ${vehicleData['num']}',
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF002E7F),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              '${vehicleData['Etat']}',
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Text(
+                                  'Entrée n: ${vehicleData['num']}',
+                                  style: TextStyle(
+                                    fontSize: 12.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                SizedBox(width: 10.0),
+                                Text(
+                                  " Date d'entrée: ${vehicleData['date']}",
+                                  style: TextStyle(
+                                    fontSize: 12.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                ' ${vehicleData['Etat']}',
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.red,
-                ),
-              ),
-            ),
-          Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              Text(
-                'Entrée n : ${vehicleData['num']}',
-                style: TextStyle(
-                  fontSize: 12.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              SizedBox(width: 10.0), // Adjust the space between texts as needed
-              Text(
-                " Date d'entrée : ${vehicleData['date']}",
-                style: TextStyle(
-                  fontSize: 12.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-            ],
-          ),
-        ),
-            // Add more fields as needed
-          ],
-        ),
-      ),
-    ),
-  ),
-
               GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -162,13 +163,17 @@ class _AcceuilState extends State<Acceuil> {
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  'TARIFS',
-                  style: TextStyle(
-                    color: Color(0xFF002E7F),
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildCard(context, "  Ajouter \nun véhicule", Colors.white),
+                        _buildCardd(context, "  Tarifs  \net  devis     ", Colors.white),
+                       
+                      ],
+                    ),
+                  ],
                 ),
               ),
               SizedBox(height: 150,),
@@ -232,4 +237,53 @@ class _AcceuilState extends State<Acceuil> {
       ),
     );
   }
+}
+
+Widget _buildCard(BuildContext context, String title, Color color) {
+  return GestureDetector(
+    onTap: () {
+      // Navigation vers une autre page
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => AnotherPage(title)),
+      );
+    },
+    child: Card(
+      color: color,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(25.0),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Text(
+          title,
+          style: TextStyle(color: Colors.grey[400], fontSize: 18.0),
+        ),
+      ),
+    ),
+  );
+}
+Widget _buildCardd(BuildContext context, String title, Color color) {
+  return GestureDetector(
+    onTap: () {
+      // Navigation vers une autre page
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => AjoutPage(title)),
+      );
+    },
+    child: Card(
+      color: color,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(25.0),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Text(
+          title,
+          style: TextStyle(color: Colors.grey[400], fontSize: 18.0),
+        ),
+      ),
+    ),
+  );
 }

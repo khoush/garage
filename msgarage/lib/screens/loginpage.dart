@@ -46,7 +46,8 @@ String userRole = (userSnapshot.data() as Map<String, dynamic>)['role'] ?? 'user
       if (userRole == 'admin') {
         // Rediriger vers la page d'administration
         // Utilisez Navigator.of(context).pushReplacement pour remplacer l'écran actuel
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => AdminPage()));
+      
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => AdminChatPage()));
       } else {
         // Rediriger vers la page utilisateur normale
         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => StatPage()));
