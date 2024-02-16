@@ -11,12 +11,52 @@ class FourthPage extends StatefulWidget {
 }
 
 class _FourthPageState extends State<FourthPage> {
-  List<String> mat = ['2022', '2057', '2000'];
-  String selectedMat = '2022';
+  List<String> mat = [];
+  String selectedMat = ''; 
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+   @override
+  void initState() {
+    super.initState();
+    _fetchImmatriculations();
+  }
+   late QuerySnapshot<Map<String, dynamic>> snapshot;
+  Future<void> _fetchImmatriculations() async {
+    try {
+      // Récupérer la collection 'véhicules' depuis Firestore
+      snapshot = await _firestore.collection('vehicules').get();
+
+      // Parcourir les documents de la collection
+      snapshot.docs.forEach((DocumentSnapshot<Map<String, dynamic>> doc) {
+        // Extraire l'immatriculation du document
+        String immatriculation = doc.get('num');
+
+        // Ajouter l'immatriculation à la liste
+        setState(() {
+          mat.add(immatriculation);
+          if (mat.isNotEmpty) {
+            // Si la liste n'est pas vide, initialiser selectedMat avec la première valeur
+            selectedMat = mat.first;
+          }
+        });
+      
+      });
+    } catch (e) {
+      print('Erreur lors de la récupération des immatriculations : $e');
+    }
+  }
 
   Future<List<DocumentSnapshot>> getVehicleData() async {
     QuerySnapshot querySnapshot =
         await FirebaseFirestore.instance.collection('vehicules').get();
+
+    return querySnapshot.docs;
+  }
+   Future<List<DocumentSnapshot>> getVehicleDataByMatricule(String matricule) async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('vehicules')
+        .where('num', isEqualTo: matricule)
+        .get();
 
     return querySnapshot.docs;
   }
@@ -49,26 +89,28 @@ class _FourthPageState extends State<FourthPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               DropdownButtonFormField<String>(
-                value: selectedMat,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedMat = newValue!;
-                  });
-                },
-                items: mat.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                decoration: InputDecoration(
-                  labelText: 'Immatriculation',
-                  border: OutlineInputBorder(),
-                ),
+              value: selectedMat,
+              onChanged: (String? newValue) {
+                setState(() {
+                  selectedMat = newValue!;
+                  print(selectedMat); //haw ybadel !!
+                });
+               
+              },
+              items: mat.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              decoration: const InputDecoration(
+                labelText: 'Immatriculation',
+                border: OutlineInputBorder(),
               ),
+            ),
               SizedBox(height: 10.0), // Add some spacing between dropdown and cards
               FutureBuilder<List<DocumentSnapshot>>(
-                future: getVehicleData(),
+                future: getVehicleDataByMatricule(selectedMat),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return CircularProgressIndicator();
@@ -89,14 +131,12 @@ class _FourthPageState extends State<FourthPage> {
                         String num = vehicleData['num'] ?? '';
                         String km = vehicleData['km'] ?? '';
                         String vidange = vehicleData['vidange'] ?? '';
-                       
                         String controle = vehicleData['controle'] ?? '';
 
                         // Use the data in your UI
                         return buildCardWithBar(
                           'assets/images/bleu.png',
                           '$num                      $km ',
-                         
                           '$vidange vidange                           $controle Controle techniques',
                         );
                         

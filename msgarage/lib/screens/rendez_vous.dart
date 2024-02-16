@@ -52,6 +52,8 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
   TextEditingController _objetController = TextEditingController();
   TextEditingController _vehiculeController = TextEditingController();
   TextEditingController _immaController = TextEditingController();
+    TextEditingController _serviceController = TextEditingController();
+
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   XFile? _pickedFile;
@@ -59,6 +61,8 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
      late DateTime _selectedDate;
      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
+       List<String> _servicesList = ['Entretien', 'Carrosserie', 'Diagnostic'];
+  List<String> _selectedServices = [];
 
   _MyFormState() {
     // Initialize _selectedDate with the current date
@@ -135,6 +139,7 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
     String immatriculation = _immaController.text;
     String objet = _objetController.text;
     String vehicule = _vehiculeController.text;
+    List<String> Services = _selectedServices; 
 
     try {
       if (_pickedFile != null) {
@@ -156,6 +161,7 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
           'vehicule': vehicule,
           'fileURL': downloadURL,
           'demandeCounter': latestDemandNumber,
+          'services' : Services ,
         });
       } else {
         await _firestore.collection('rendezvous').add({
@@ -168,6 +174,7 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
           'objet': objet,
           'vehicule': vehicule,
           'demandeCounter': latestDemandNumber,
+          'service' : Services,
         });
       }
 
@@ -182,6 +189,7 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
       _immaController.clear();
       _objetController.clear();
       _vehiculeController.clear();
+      _serviceController.clear();
       _pickedFile = null; // Clear the picked file
 
     } catch (e) {
@@ -204,68 +212,9 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width: 130,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.white.withOpacity(0.5),
-                          spreadRadius: 2,
-                          blurRadius: 5,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: TextFormField(
-                      controller: _demandeController,
-                      enabled: false,
-                      decoration: InputDecoration(
-                        hintText: "         Demande",
-                        hintStyle: TextStyle(
-                          fontSize: 14.0,
-                          color: Colors.grey,
-                        ),
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Container(
-                    width: 130,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.white.withOpacity(0.5),
-                          spreadRadius: 2,
-                          blurRadius: 5,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: TextFormField(
-                      controller: _datedController,
-                      enabled: false,
-                      decoration: InputDecoration(
-                        hintText: "      Date demande",
-                        hintStyle: TextStyle(
-                          fontSize: 14.0,
-                          color: Colors.grey,
-                        ),
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              
+                 
+                 
               SizedBox(height: 20),
               Container(
                 width: 350,
@@ -310,6 +259,70 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
                   ),
                 ),
               ),
+               SizedBox(height: 20),
+               Container(
+                width: 350,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.white.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: DropdownButtonFormField(
+                  items: _servicesList.map((service) {
+                    return DropdownMenuItem(
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: _selectedServices.contains(service),
+                            onChanged: (value) {
+                              setState(() {
+                                if (value != null) {
+                                  if (value) {
+                                    _selectedServices.add(service);
+                                  } else {
+                                    _selectedServices.remove(service);
+                                  }
+                                }
+                              });
+                            },
+                          ),
+                          Text(service),
+                        ],
+                      ),
+                      value: service,
+                    );
+                  }).toList(),
+                  onChanged: (String? value) {},
+                  decoration: InputDecoration(
+                    hintText: "Services",
+                    hintStyle: TextStyle(
+                      fontSize: 14.0,
+                      color: Colors.grey,
+                    ),
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                        width: 1,
+                      ),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+             
               SizedBox(height: 10,),
              Container(
   width: 350,

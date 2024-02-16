@@ -1,19 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:intl/intl.dart';
 import 'package:msgarage/screens/navbar.chat.dart';
 
-class AnotherPage extends StatefulWidget {
-  const AnotherPage(String title, {super.key});
+class remplPage extends StatefulWidget {
+  const remplPage(String title, {super.key});
 
   @override
-  State<AnotherPage> createState() => _AnotherPageState();
+  State<remplPage> createState() => _remplPageState();
 }
 
-class _AnotherPageState extends State<AnotherPage> {
+class _remplPageState extends State<remplPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+       appBar: AppBar(
         backgroundColor: Color(0xFF002E7F),
         title: Center(
           child: Image.asset(
@@ -38,56 +40,64 @@ class _AnotherPageState extends State<AnotherPage> {
     );
   }
 }
-
 class MyForm extends StatefulWidget {
   @override
   _MyFormState createState() => _MyFormState();
 }
-
 class _MyFormState extends State<MyForm> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _clientController = TextEditingController();
-  final TextEditingController _marqueController = TextEditingController();
-  final TextEditingController _modeleController = TextEditingController();
-  final TextEditingController _matrController = TextEditingController();
-  final TextEditingController _kilomController = TextEditingController();
+  final TextEditingController _nomController = TextEditingController();
+  final TextEditingController _numtelController = TextEditingController();
+    TextEditingController _dateController = TextEditingController();
+TextEditingController _heureController = TextEditingController(text: '00:00');
 
-  final TextEditingController _numchController = TextEditingController();
-  final TextEditingController _numchhController = TextEditingController();
+  
+final TextEditingController _matrController = TextEditingController();
+final TextEditingController _raisonController = TextEditingController();
+
+
+ 
+    late DateTime _selectedDate;
+     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  _MyFormState() {
+    // Initialize _selectedDate with the current date
+    _selectedDate = DateTime.now();
+  }
+ 
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> saveDataToFirebase() async {
-    String email = _emailController.text;
-    String client = _clientController.text;
-    String numch = _numchhController.text;
-    String numchh = _numchController.text;
+   
+    String nom = _nomController.text;
+  String raison = _raisonController.text;
+    String date = _dateController.text;
+    String heure = _heureController.text;
     String matr = _matrController.text;
-    String modele = _modeleController.text;
-    String marque = _marqueController.text;
-    String Kilometrage = _kilomController.text;
+    String numtel = _numtelController.text;
 
     try {
-      await _firestore.collection('nouveauvehicules').add({
-        'email': email,
-        'client': client,
-        'numch': numch,
-        'numchh': numchh,
+       
+        
+
+
+      await _firestore.collection('vehiculeremplacement').add({
+        'nom': nom,
+        'numtel': numtel,
+        'date': date,
+        'heure': heure,
         'matr': matr,
-        'modele': modele,
-        'marque': marque,
-        'Kilométrage': Kilometrage,
+        'raison' : raison ,
       });
 
       // Clear text controllers after saving data
-      _emailController.clear();
-      _clientController.clear();
-      _marqueController.clear();
+      _dateController.clear();
+      _heureController.clear();
+      _nomController.clear();
       _matrController.clear();
-      _modeleController.clear();
-      _numchController.clear();
-      _numchhController.clear();
-      _kilomController.clear();
+      _numtelController.clear();
+      _raisonController.clear();
 
       _showSuccessDialog();
     } catch (e) {
@@ -102,7 +112,7 @@ class _MyFormState extends State<MyForm> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Success'),
-          content: Text('Vehicle added successfully!'),
+          content: Text('demand added successfully!'),
           actions: [
             TextButton(
               onPressed: () {
@@ -115,6 +125,33 @@ class _MyFormState extends State<MyForm> {
       },
     );
   }
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+        _dateController.text = DateFormat('yyyy-MM-dd').format(_selectedDate);
+      });
+    }
+  }
+    Future<void> _selectTime(BuildContext context) async {
+  TimeOfDay? picked = await showTimePicker(
+    context: context,
+    initialTime: TimeOfDay.now(),
+  );
+
+  if (picked != null) {
+    setState(() {
+      _heureController.text = picked.format(context);
+    });
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +172,7 @@ class _MyFormState extends State<MyForm> {
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Text(
-                    'Ajouter votre Citroën',
+                    'Demande de Vehicule \n   de remplacements',
                     style: TextStyle(
                       color: Color.fromARGB(255, 76, 112, 107),
                       fontSize: 17.0,
@@ -157,7 +194,7 @@ class _MyFormState extends State<MyForm> {
                     ),
                   ),
               ),
-              SizedBox(height: 5),
+              SizedBox(height: 20),
               Container(
                 width: 350,
                 height: 50,
@@ -174,10 +211,10 @@ class _MyFormState extends State<MyForm> {
                   ],
                 ),
                 child: TextFormField(
-                  controller: _emailController,
+                  controller: _nomController,
                   enabled: true,
                   decoration: InputDecoration(
-                    hintText: "Email",
+                    hintText: "Nom et prenom",
                     hintStyle: TextStyle(
                       fontSize: 14.0,
                       color: Colors.grey,
@@ -198,7 +235,7 @@ class _MyFormState extends State<MyForm> {
                 ),
               ),
               SizedBox(
-                height: 5,
+                height: 20,
               ),
               Container(
                 width: 350,
@@ -216,10 +253,10 @@ class _MyFormState extends State<MyForm> {
                   ],
                 ),
                 child: TextFormField(
-                  controller: _clientController,
+                  controller: _numtelController,
                   enabled: true,
                   decoration: InputDecoration(
-                    hintText: "Client",
+                    hintText: "Numéro de téléphone",
                     hintStyle: TextStyle(
                       fontSize: 14.0,
                       color: Colors.grey,
@@ -239,7 +276,107 @@ class _MyFormState extends State<MyForm> {
                   ),
                 ),
               ),
-              SizedBox(height: 5),
+              SizedBox(height: 20),
+              Container(
+                width: 350,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.white.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: TextFormField(
+                  controller: _dateController,
+                  enabled: true,
+                  decoration: InputDecoration(
+                    hintText: "Date",
+                    hintStyle: TextStyle(
+                      fontSize: 14.0,
+                      color: Colors.grey,
+                    ),
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                        width: 1,
+                      ),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                        width: 1,
+                      ),
+                    ),
+                    suffixIcon: InkWell(
+        onTap: () {
+          _selectDate(context); // Define this function to show the date picker
+        },
+        child: Icon(
+          Icons.calendar_today,
+          color: Colors.grey,
+        ),
+      ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                width: 350,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.white.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: TextFormField(
+                  controller: _heureController,
+                  enabled: true,
+                  onTap: () {
+                     _selectTime(context);
+                             },
+                  decoration: InputDecoration(
+                    hintText: "Heure",
+                    hintStyle: TextStyle(
+                      fontSize: 14.0,
+                      color: Colors.grey,
+                    ),
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                        width: 1,
+                      ),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                        width: 1,
+                      ),
+                    ),
+                     suffixIcon: Icon(
+                      Icons.lock_clock,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
               Container(
                 width: 350,
                 height: 50,
@@ -259,7 +396,7 @@ class _MyFormState extends State<MyForm> {
                   controller: _matrController,
                   enabled: true,
                   decoration: InputDecoration(
-                    hintText: "Immatriculation",
+                    hintText: "Immatriculation de votre véhicule",
                     hintStyle: TextStyle(
                       fontSize: 14.0,
                       color: Colors.grey,
@@ -279,218 +416,11 @@ class _MyFormState extends State<MyForm> {
                   ),
                 ),
               ),
+             
+              
+             
               SizedBox(
-                height: 5,
-              ),
-              Container(
-                width: 350,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.white.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: TextFormField(
-                  controller: _kilomController,
-                  enabled: true,
-                  decoration: InputDecoration(
-                    hintText: "Kilométrage",
-                    hintStyle: TextStyle(
-                      fontSize: 14.0,
-                      color: Colors.grey,
-                    ),
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Container(
-                width: 350,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.white.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: TextFormField(
-                  controller: _marqueController,
-                  enabled: true,
-                  decoration: InputDecoration(
-                    hintText: "Marque",
-                    hintStyle: TextStyle(
-                      fontSize: 14.0,
-                      color: Colors.grey,
-                    ),
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Container(
-                width: 350,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.white.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: TextFormField(
-                  controller: _modeleController,
-                  enabled: true,
-                  decoration: InputDecoration(
-                    hintText: "Modele",
-                    hintStyle: TextStyle(
-                      fontSize: 14.0,
-                      color: Colors.grey,
-                    ),
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Container(
-                width: 350,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.white.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: TextFormField(
-                  controller: _numchController,
-                  enabled: true,
-                  decoration: InputDecoration(
-                    hintText: "Num chassis",
-                    hintStyle: TextStyle(
-                      fontSize: 14.0,
-                      color: Colors.grey,
-                    ),
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Container(
-                width: 350,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.white.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: TextFormField(
-                  controller: _numchhController,
-                  enabled: true,
-                  decoration: InputDecoration(
-                    hintText: "Réecrire",
-                    hintStyle: TextStyle(
-                      fontSize: 14.0,
-                      color: Colors.grey,
-                    ),
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 10,
+                height: 20,
               ),
               Container(
                 width: 350,
@@ -507,7 +437,7 @@ class _MyFormState extends State<MyForm> {
                     ),
                   ),
                   child: Text(
-                    'Ajouter',
+                    'Envoyer la demande',
                     style: TextStyle(
                       fontSize: 14.0,
                       color: Colors.white,

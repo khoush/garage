@@ -1,11 +1,12 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:msgarage/screens/ajoutpage.dart';
-import 'package:msgarage/screens/avancement.dart';
 import 'package:msgarage/screens/client.dart';
 import 'package:msgarage/screens/devis.dart';
+import 'package:msgarage/screens/remppage.dart';
 import 'package:msgarage/screens/rendez_vous.dart';
-
 
 class Acceuil extends StatefulWidget {
   const Acceuil({Key? key});
@@ -15,6 +16,8 @@ class Acceuil extends StatefulWidget {
 }
 
 class _AcceuilState extends State<Acceuil> {
+  int initiallyDisplayedVehicles = 2;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,12 +32,6 @@ class _AcceuilState extends State<Acceuil> {
           ),
         ),
         centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.menu, color: Colors.white),
-          onPressed: () {
-            // Add your logic to handle the menu icon click here
-          },
-        ),
         actions: [
           IconButton(
             icon: Icon(Icons.notifications, color: Colors.white),
@@ -73,7 +70,7 @@ class _AcceuilState extends State<Acceuil> {
                   ),
                 ),
               ),
-              for (var vehicleData in vehiclesData)
+              for (var i = 0; i < min(initiallyDisplayedVehicles, vehiclesData.length); i++)
                 Card(
                   elevation: 1,
                   child: Container(
@@ -81,7 +78,7 @@ class _AcceuilState extends State<Acceuil> {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: NetworkImage(vehicleData['imageUrl'] ?? ''),
+                        image: NetworkImage(vehiclesData[i]['imageUrl'] ?? ''),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -93,7 +90,7 @@ class _AcceuilState extends State<Acceuil> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              'Véhicule: ${vehicleData['num']}',
+                              'Véhicule: ${vehiclesData[i]['num']}',
                               style: TextStyle(
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.bold,
@@ -104,7 +101,7 @@ class _AcceuilState extends State<Acceuil> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              '${vehicleData['Etat']}',
+                              '${vehiclesData[i]['Etat']}',
                               style: TextStyle(
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.bold,
@@ -117,7 +114,7 @@ class _AcceuilState extends State<Acceuil> {
                             child: Row(
                               children: [
                                 Text(
-                                  'Entrée n: ${vehicleData['num']}',
+                                  'Entrée n: ${vehiclesData[i]['num']}',
                                   style: TextStyle(
                                     fontSize: 12.0,
                                     fontWeight: FontWeight.bold,
@@ -126,7 +123,7 @@ class _AcceuilState extends State<Acceuil> {
                                 ),
                                 SizedBox(width: 10.0),
                                 Text(
-                                  " Date d'entrée: ${vehicleData['date']}",
+                                  " Date d'entrée: ${vehiclesData[i]['date']}",
                                   style: TextStyle(
                                     fontSize: 12.0,
                                     fontWeight: FontWeight.bold,
@@ -143,10 +140,9 @@ class _AcceuilState extends State<Acceuil> {
                 ),
               GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Detailspage()),
-                  );
+                  setState(() {
+                    initiallyDisplayedVehicles = vehiclesData.length;
+                  });
                 },
                 child: Container(
                   alignment: Alignment.topRight,
@@ -166,11 +162,16 @@ class _AcceuilState extends State<Acceuil> {
                 child: Column(
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        _buildCard(context, "  Ajouter \nun véhicule", Colors.white),
-                        _buildCardd(context, "  Tarifs  \net  devis     ", Colors.white),
-                       
+                        _buildCard(context, "  Ajouter \nun véhicule     ", Colors.white),
+                        _buildCardd(context, "  Tarifs  \net devis          ", Colors.white),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        _buildCarddd(context, "Vehicule de\nremplacement", Colors.white),
                       ],
                     ),
                   ],
@@ -249,20 +250,39 @@ Widget _buildCard(BuildContext context, String title, Color color) {
       );
     },
     child: Card(
+      elevation: 5.0, // Ajoute une ombre à la carte
       color: color,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(25.0),
+        borderRadius: BorderRadius.circular(15.0), // Bordure personnalisée
+        // Vous pouvez également ajouter une bordure supplémentaire
+        side: BorderSide(
+          color: Colors.grey[400]!,
+          width: 1.0,
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Text(
-          title,
-          style: TextStyle(color: Colors.grey[400], fontSize: 18.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.star, // Ajoutez un icône personnalisé ici
+              color: Colors.yellow,
+              size: 30.0,
+            ),
+            SizedBox(height: 10.0), // Espacement entre l'icône et le texte
+            Text(
+              title,
+              style: TextStyle(color: Colors.grey[400], fontSize: 18.0),
+            ),
+          ],
         ),
       ),
     ),
   );
 }
+
 Widget _buildCardd(BuildContext context, String title, Color color) {
   return GestureDetector(
     onTap: () {
@@ -273,15 +293,76 @@ Widget _buildCardd(BuildContext context, String title, Color color) {
       );
     },
     child: Card(
+      elevation: 5.0, // Ajoute une ombre à la carte
       color: color,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(25.0),
+        borderRadius: BorderRadius.circular(15.0), // Bordure personnalisée
+        // Vous pouvez également ajouter une bordure supplémentaire
+        side: BorderSide(
+          color: Colors.grey[400]!,
+          width: 1.0,
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Text(
-          title,
-          style: TextStyle(color: Colors.grey[400], fontSize: 18.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.star, // Ajoutez un icône personnalisé ici
+              color: Colors.yellow,
+              size: 30.0,
+            ),
+            SizedBox(height: 10.0), // Espacement entre l'icône et le texte
+            Text(
+              title,
+              style: TextStyle(color: Colors.grey[400], fontSize: 18.0),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+Widget _buildCarddd(BuildContext context, String title, Color color) {
+  return GestureDetector(
+    onTap: () {
+      // Navigation vers une autre page
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => remplPage(title)),
+      );
+    },
+    child: Card(
+      elevation: 5.0, 
+      color: color,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0), // Bordure personnalisée
+     
+        side: BorderSide(
+          color: Colors.grey[400]!,
+          width: 1.0,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.star, // Ajoutez un icône personnalisé ici
+              color: Colors.yellow,
+              size: 30.0,
+            ),
+            SizedBox(height: 10.0), // Espacement entre l'icône et le texte
+            Text(
+              title,
+              style: TextStyle(color: Colors.grey[400], fontSize: 18.0),
+            ),
+          ],
         ),
       ),
     ),

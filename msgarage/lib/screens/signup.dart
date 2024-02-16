@@ -58,11 +58,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Image.asset(
-                  'assets/images/logo.png',
-                  height: 100,
-                  width: 150,
-                ),
+              Row( // Use Row instead of Column
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            'assets/images/logo.png',
+            height: 100,
+            width: 150,
+          ),
+          SizedBox(width: 20), // Add some space between the images
+          Image.asset(
+            'assets/images/arr.jpeg', // Replace with the path to your second image
+            height: 50,
+            width: 150,
+          ),
+        ],
+      ),
                 Padding(
                   padding: const EdgeInsets.only(left: 10),
                   child: Text(
@@ -73,6 +84,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                 
                 ),
                 SizedBox(height: 20),
                 CustomTextField(
@@ -124,6 +136,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           _nomutilController.text,
                           'user',
                         );
+                        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LoginScreen(),
+          ),
+        );
                       } catch (e) {
                         // Handle registration errors
                         if (e is FirebaseAuthException) {

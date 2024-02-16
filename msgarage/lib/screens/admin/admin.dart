@@ -48,6 +48,9 @@ class AdminChatScreenState extends State<AdminChatScreen> {
       print('Error fetching available users: $e');
     }
   }
+  //hedhy tjibli fel les utilisateurs eli mawjoudin déjà tjibli fehom bel id behy
+  //hathi wen tnadi feha w kif te5ter id ,no9ssed mak enty ta3mel selection id weno codeha lfaza athika mafhmtekesh esh toqsod enty shoftou lvideo eli baathtou ?ey ey la7tha tw nfahmek ok
+  //chof cature eli b3ath'helk//eyyy enty te5ter fi id heka walale nekhtar fel id num 3,,ey ey ay wa7ed fehom, weno lcode eli y5alli fik te5ter id att
 
   void _sendMessage({String? imageUrl, required String recipient}) async {
     String text = _messageController.text.trim();
@@ -80,8 +83,8 @@ class AdminChatScreenState extends State<AdminChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF002E7F),
-        title: Text(
+        backgroundColor: const Color(0xFF002E7F),
+        title: const Text(
           'Admin Chat',
           style: TextStyle(
             color: Colors.white,
@@ -90,7 +93,7 @@ class AdminChatScreenState extends State<AdminChatScreen> {
         ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.people,
               color: Colors.white,
             ),
@@ -108,11 +111,12 @@ class AdminChatScreenState extends State<AdminChatScreen> {
                     stream: _firestore
                         .collection('all_messages')
                         .where('recipient', isEqualTo: _selectedUser)
+                      
                         .orderBy('timestamp', descending: true)
-                        .snapshots(),//mad5alch hna asl
+                        .snapshots(),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
-                        return Center(
+                        return const Center(
                           child: CircularProgressIndicator(),
                         );
                       }
@@ -136,7 +140,7 @@ class AdminChatScreenState extends State<AdminChatScreen> {
                       );
                     },
                   )
-                : Center(
+                : const Center(
                     child: Text('Select a user to start a conversation.'),
                   ),
           ),
@@ -145,7 +149,7 @@ class AdminChatScreenState extends State<AdminChatScreen> {
             child: Row(
               children: <Widget>[
                 IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.camera,
                     color: Color(0xFF002E7F),
                   ),
@@ -154,13 +158,13 @@ class AdminChatScreenState extends State<AdminChatScreen> {
                 Expanded(
                   child: TextField(
                     controller: _messageController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Enter your message...',
                     ),
                   ),
                 ),
                 IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.send,
                     color: Color(0xFF002E7F),
                   ),
@@ -169,7 +173,7 @@ class AdminChatScreenState extends State<AdminChatScreen> {
                       _sendMessage(recipient: _selectedUser);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
+                        const SnackBar(
                           content:
                               Text('Please select a user to send a message.'),
                         ),
@@ -190,29 +194,35 @@ class AdminChatScreenState extends State<AdminChatScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Available Users'),
+          title: const Text('Available Users'),
           content: _availableUsers.isNotEmpty
               ? ListView.builder(
                   itemCount: _availableUsers.length,
                   itemBuilder: (context, index) {
                     return ListTile(
-                      title: Text(_availableUsers[index]),
+                      title: Text(_availableUsers[
+                          index]), //hna l'affichage ta3 l'id eli 3endek
                       onTap: () {
-                        setState(() {
-                          _selectedUser = _availableUsers[index];
-                        });
+                        //haw 3elh nes2l fikk code hath!!//w kifech ye5ter id
+                         _selectedUser = _availableUsers[
+                              index]; //enty hna hak 3amla _selectedUser yhez valeur mais chbih gila yarja3 fara8!!
+                          print(
+                              "$_selectedUser ******");
+                              setState(() {//hna enty te5ter fi user eli bch tab3ethlou!!
+                          //ama nafs lahkeya.. la la7tha ta9rib yet3ada just njareb faza
+                        });//ya5i ma3mlch print ? nooo //3awed a5tar id// behy haz id tw howa ,, hatha id user ok
                         Navigator.of(context).pop();
                       },
                     );
                   },
                 )
-              : Text('No available users.'),
+              : const Text('No available users.'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             ),
           ],
         );
@@ -237,11 +247,11 @@ class MessageWidget extends StatelessWidget {
         children: <Widget>[
           Text(
             sender,
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           if (imageUrl != null && imageUrl!.isNotEmpty)
             _isNetworkImage(imageUrl!)
                 ? Image.network(
