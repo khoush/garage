@@ -48,9 +48,6 @@ class AdminChatScreenState extends State<AdminChatScreen> {
       print('Error fetching available users: $e');
     }
   }
-  //hedhy tjibli fel les utilisateurs eli mawjoudin déjà tjibli fehom bel id behy
-  //hathi wen tnadi feha w kif te5ter id ,no9ssed mak enty ta3mel selection id weno codeha lfaza athika mafhmtekesh esh toqsod enty shoftou lvideo eli baathtou ?ey ey la7tha tw nfahmek ok
-  //chof cature eli b3ath'helk//eyyy enty te5ter fi id heka walale nekhtar fel id num 3,,ey ey ay wa7ed fehom, weno lcode eli y5alli fik te5ter id att
 
   void _sendMessage({String? imageUrl, required String recipient}) async {
     String text = _messageController.text.trim();
@@ -62,7 +59,8 @@ class AdminChatScreenState extends State<AdminChatScreen> {
         'imageUrl': imageUrl,
         'timestamp': FieldValue.serverTimestamp(),
         'recipient': recipient,
-        'role': 'admin',
+        'role':
+            'admin', // Assurez-vous que le rôle du destinataire est correctement défini
       });
 
       _messageController.clear();
@@ -110,8 +108,6 @@ class AdminChatScreenState extends State<AdminChatScreen> {
                 ? StreamBuilder<QuerySnapshot>(
                     stream: _firestore
                         .collection('all_messages')
-                        .where('recipient', isEqualTo: _selectedUser)
-                      
                         .orderBy('timestamp', descending: true)
                         .snapshots(),
                     builder: (context, snapshot) {
@@ -200,17 +196,11 @@ class AdminChatScreenState extends State<AdminChatScreen> {
                   itemCount: _availableUsers.length,
                   itemBuilder: (context, index) {
                     return ListTile(
-                      title: Text(_availableUsers[
-                          index]), //hna l'affichage ta3 l'id eli 3endek
+                      title: Text(_availableUsers[index]),
                       onTap: () {
-                        //haw 3elh nes2l fikk code hath!!//w kifech ye5ter id
-                         _selectedUser = _availableUsers[
-                              index]; //enty hna hak 3amla _selectedUser yhez valeur mais chbih gila yarja3 fara8!!
-                          print(
-                              "$_selectedUser ******");
-                              setState(() {//hna enty te5ter fi user eli bch tab3ethlou!!
-                          //ama nafs lahkeya.. la la7tha ta9rib yet3ada just njareb faza
-                        });//ya5i ma3mlch print ? nooo //3awed a5tar id// behy haz id tw howa ,, hatha id user ok
+                        setState(() {
+                          _selectedUser = _availableUsers[index];
+                        });
                         Navigator.of(context).pop();
                       },
                     );

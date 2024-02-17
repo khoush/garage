@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:msgarage/screens/conversation.dart';
-import 'package:msgarage/screens/navbar.chat.dart';
 
 class ClientPage extends StatelessWidget {
   @override
@@ -28,23 +26,41 @@ class ChatScreenState extends State<ChatScreen> {
   final ImagePicker _imagePicker = ImagePicker();
 
   User? _user;
+  List<String> _availableAdmins = [];
 
   @override
   void initState() {
     super.initState();
     _user = _auth.currentUser;
+    _fetchAvailableAdmins();
   }
 
-  void _sendMessage({String? imageUrl}) async {
+  Future<void> _fetchAvailableAdmins() async {
+    try {
+      QuerySnapshot adminsSnapshot = await _firestore
+          .collection('users')
+          .where('role', isEqualTo: 'admin')
+          .get();
+
+      setState(() {
+        _availableAdmins =
+            adminsSnapshot.docs.map((admin) => admin.id).toList();
+      });
+    } catch (e) {
+      print('Error fetching admins: $e');
+    }
+  }
+
+  void _sendMessage({String? imageUrl, required String recipient}) async {
     String text = _messageController.text.trim();
 
     if (text.isNotEmpty || imageUrl != null) {
       await _firestore.collection('all_messages').add({
         'text': text,
-        'sender': _user!.email,
+        'sender': _user?.email, // Utilisez l'ID de l'utilisateur au lieu de l'e-mail
         'imageUrl': imageUrl,
         'timestamp': FieldValue.serverTimestamp(),
-        'recipient': 'admin',
+        'recipient': recipient,
         'role': 'client',
       });
 
@@ -56,9 +72,38 @@ class ChatScreenState extends State<ChatScreen> {
     final pickedFile = await _imagePicker.pickImage(source: source);
 
     if (pickedFile != null) {
-      _sendMessage(imageUrl: pickedFile.path);
+      _selectAdminAndSendMessage(pickedFile.path);
     }
   }
+
+void _selectAdminAndSendMessage(String? imageUrl) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Select Admin'),
+        content: _availableAdmins.isNotEmpty
+            ? ListView.builder(
+                itemCount: _availableAdmins.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(_availableAdmins[index]),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      _sendMessage(
+                        imageUrl: imageUrl ?? '', // Use empty string or another default value
+                        recipient: _availableAdmins[index],
+                      );
+                    },
+                  );
+                },
+              )
+            : Text('No admins available'),
+      );
+    },
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -66,29 +111,21 @@ class ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         backgroundColor: Color(0xFF002E7F),
         title: Text(
-          'Kamel abid',
+          'Client Chat',
           style: TextStyle(
             color: Colors.white,
             fontSize: 16,
           ),
         ),
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => StatPage()));
-          },
-        ),
         actions: <Widget>[
           IconButton(
             icon: Icon(
-              Icons.chat,
+              Icons.people,
               color: Colors.white,
             ),
             onPressed: () {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => ConversationScreen()));
+              _fetchAvailableAdmins(); // Rafraîchit la liste des admins
+              _selectAdminAndSendMessage(null); // Sélectionne un admin
             },
           ),
         ],
@@ -99,7 +136,6 @@ class ChatScreenState extends State<ChatScreen> {
             child: StreamBuilder<QuerySnapshot>(
               stream: _firestore
                   .collection('all_messages')
-                  .where('recipient', isEqualTo: 'client')
                   .orderBy('timestamp', descending: true)
                   .snapshots(),
               builder: (context, snapshot) {
@@ -113,11 +149,19 @@ class ChatScreenState extends State<ChatScreen> {
 
                 List<Widget> messageWidgets = [];
                 for (var message in messages) {
-                  var messageText = message['text'];
                   var messageSender = message['sender'];
+                  var messageRole = message['role'];
+
+                  if (messageRole == 'admin' && _user?.uid != messageSender) {
+                    // Si c'est un message de l'administrateur et l'utilisateur actuel n'est pas l'administrateur, ne l'affiche pas
+                    continue;
+                  }
+
+                  var messageText = message['text'];
                   var imageUrl = message['imageUrl'];
 
-                  var messageWidget = MessageWidget(messageSender, messageText, imageUrl);
+                  var messageWidget =
+                      MessageWidget(messageSender, messageText, imageUrl);
                   messageWidgets.add(messageWidget);
                 }
 
@@ -152,7 +196,9 @@ class ChatScreenState extends State<ChatScreen> {
                     Icons.send,
                     color: Color(0xFF002E7F),
                   ),
-                  onPressed: () => _sendMessage(),
+                  onPressed: () => _sendMessage(
+                    recipient: 'admin', // Remplacez 'admin' par l'ID réel de l'administrateur
+                  ),
                 ),
               ],
             ),
