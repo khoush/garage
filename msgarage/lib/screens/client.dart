@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:msgarage/screens/navbar.chat.dart';
 
 class ClientPage extends StatelessWidget {
   @override
@@ -110,12 +111,25 @@ void _selectAdminAndSendMessage(String? imageUrl) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF002E7F),
-        title: Text(
-          'Client Chat',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
+        title: Center(
+          child: Text(
+            'Client Chat',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+            ),
           ),
+        ),
+         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            Navigator.of(context)
+                .pushReplacement(MaterialPageRoute(builder: (_) => StatPage()));
+          },
         ),
         actions: <Widget>[
           IconButton(
@@ -152,22 +166,21 @@ void _selectAdminAndSendMessage(String? imageUrl) {
                   var messageSender = message['sender'];
                   var messageRole = message['role'];
 
-                  if (messageRole == 'admin' && _user?.uid != messageSender) {
-                    // Si c'est un message de l'administrateur et l'utilisateur actuel n'est pas l'administrateur, ne l'affiche pas
-                    continue;
-                  }
+                  // if (messageRole == 'admin' && _user?.uid != messageSender) {
+                  //   // Si c'est un message de l'administrateur et l'utilisateur actuel n'est pas l'administrateur, ne l'affiche pas
+                  //   continue;
+                  // }
 
                   var messageText = message['text'];
                   var imageUrl = message['imageUrl'];
 
-                  var messageWidget =
-                      MessageWidget(messageSender, messageText, imageUrl);
+                  var messageWidget =  MessageWidget(messageSender, messageText, imageUrl);
                   messageWidgets.add(messageWidget);
                 }
 
                 return ListView(
                   reverse: true,
-                  children: messageWidgets,
+                  children: [],
                 );
               },
             ),

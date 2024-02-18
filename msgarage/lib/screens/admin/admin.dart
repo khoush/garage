@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:msgarage/screens/loginpage.dart';
 
 class AdminChatPage extends StatelessWidget {
   @override
@@ -27,6 +28,18 @@ class AdminChatScreenState extends State<AdminChatScreen> {
 
   late User _user;
   late List<String> _availableUsers;
+Future<void> _handleSignOut() async {
+  try {
+    await _auth.signOut();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+    );
+  } catch (e) {
+    print('Erreur lors de la déconnexion : $e');
+  }
+}
+
 
   @override
   void initState() {
@@ -97,6 +110,15 @@ class AdminChatScreenState extends State<AdminChatScreen> {
             ),
             onPressed: () {
               _showAvailableUsersDialog();
+            },
+          ),
+           IconButton(
+            icon: const Icon(
+              Icons.exit_to_app, // Icône de déconnexion
+              color: Colors.white,
+            ),
+            onPressed: () {
+              _handleSignOut(); // Fonction pour gérer la déconnexion
             },
           ),
         ],
