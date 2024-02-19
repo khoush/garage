@@ -55,7 +55,10 @@ Future<void> _handleSignOut() async {
           await FirebaseFirestore.instance.collection('users').get();
 
       setState(() {
-        _availableUsers = usersSnapshot.docs.map((user) => user.id).toList();
+        _availableUsers = usersSnapshot.docs.map((user) => (user.data() as Map<String, dynamic>)['nom'] as String?)  
+          .where((name) => name != null)
+          .cast<String>()
+          .toList();
       });
     } catch (e) {
       print('Error fetching available users: $e');

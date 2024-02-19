@@ -6,49 +6,56 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:msgarage/screens/navbar.chat.dart';
 
-class ClientPage extends StatelessWidget {
+class ClientChatPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: ChatScreen(),
+      home: ClientChatScreen(),
     );
   }
 }
 
-class ChatScreen extends StatefulWidget {
+class ClientChatScreen extends StatefulWidget {
   @override
-  State createState() => ChatScreenState();
+  State createState() => ClientChatScreenState();
 }
 
-class ChatScreenState extends State<ChatScreen> {
+class ClientChatScreenState extends State<ClientChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final ImagePicker _imagePicker = ImagePicker();
 
-  User? _user;
-  List<String> _availableAdmins = [];
+  late User _user;
+  late List<String> _availableAdmins;
+
+
+
 
   @override
   void initState() {
     super.initState();
-    _user = _auth.currentUser;
-    _fetchAvailableAdmins();
+    _user = _auth.currentUser!;
+    _availableAdmins = [];
+    _getAvailableAdmins();
   }
 
-  Future<void> _fetchAvailableAdmins() async {
+  Future<void> _getAvailableAdmins() async {
     try {
-      QuerySnapshot adminsSnapshot = await _firestore
-          .collection('users')
+      QuerySnapshot usersSnapshot =
+          await FirebaseFirestore.instance.collection('users')
+           
           .where('role', isEqualTo: 'admin')
           .get();
 
       setState(() {
-        _availableAdmins =
-            adminsSnapshot.docs.map((admin) => admin.id).toList();
+        _availableAdmins = usersSnapshot.docs.map((user) => (user.data() as Map<String, dynamic>)['nom'] as String?)  
+          .where((name) => name != null)
+          .cast<String>()
+          .toList();
       });
     } catch (e) {
-      print('Error fetching admins: $e');
+      print('Error fetching available Admins: $e');
     }
   }
 
@@ -58,11 +65,12 @@ class ChatScreenState extends State<ChatScreen> {
     if (text.isNotEmpty || imageUrl != null) {
       await _firestore.collection('all_messages').add({
         'text': text,
-        'sender': _user?.email, // Utilisez l'ID de l'utilisateur au lieu de l'e-mail
+        'sender': _user.email,
         'imageUrl': imageUrl,
         'timestamp': FieldValue.serverTimestamp(),
         'recipient': recipient,
-        'role': 'client',
+        'role':
+            'admin', // Assurez-vous que le rôle du destinataire est correctement défini
       });
 
       _messageController.clear();
@@ -73,53 +81,36 @@ class ChatScreenState extends State<ChatScreen> {
     final pickedFile = await _imagePicker.pickImage(source: source);
 
     if (pickedFile != null) {
-      _selectAdminAndSendMessage(pickedFile.path);
+      _sendMessage(imageUrl: pickedFile.path, recipient: _selectedUser);
     }
   }
 
-void _selectAdminAndSendMessage(String? imageUrl) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Select Admin'),
-        content: _availableAdmins.isNotEmpty
-            ? ListView.builder(
-                itemCount: _availableAdmins.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(_availableAdmins[index]),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      _sendMessage(
-                        imageUrl: imageUrl ?? '', // Use empty string or another default value
-                        recipient: _availableAdmins[index],
-                      );
-                    },
-                  );
-                },
-              )
-            : Text('No admins available'),
-      );
-    },
-  );
-}
-
+  String _selectedUser = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF002E7F),
-        title: Center(
-          child: Text(
-            'Client Chat',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-            ),
+        backgroundColor: const Color(0xFF002E7F),
+        title: const Text(
+          'Client Chat',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
           ),
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(
+              Icons.people,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              _showAvailableUsersDialog();
+            },
+          ),
+         
+        ],
          centerTitle: true,
         leading: IconButton(
           icon: Icon(
@@ -131,66 +122,52 @@ void _selectAdminAndSendMessage(String? imageUrl) {
                 .pushReplacement(MaterialPageRoute(builder: (_) => StatPage()));
           },
         ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.people,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              _fetchAvailableAdmins(); // Rafraîchit la liste des admins
-              _selectAdminAndSendMessage(null); // Sélectionne un admin
-            },
-          ),
-        ],
       ),
       body: Column(
         children: <Widget>[
           Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: _firestore
-                  .collection('all_messages')
-                  .orderBy('timestamp', descending: true)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
+            child: _selectedUser.isNotEmpty
+                ? StreamBuilder<QuerySnapshot>(
+                    stream: _firestore
+                        .collection('all_messages')
+                        .orderBy('timestamp', descending: true)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
 
-                var messages = snapshot.data!.docs.reversed;
+                      var messages = snapshot.data!.docs.reversed;
 
-                List<Widget> messageWidgets = [];
-                for (var message in messages) {
-                  var messageSender = message['sender'];
-                  var messageRole = message['role'];
+                      List<Widget> messageWidgets = [];
+                      for (var message in messages) {
+                        var messageText = message['text'];
+                        var messageSender = message['sender'];
+                        var imageUrl = message['imageUrl'];
 
-                  // if (messageRole == 'admin' && _user?.uid != messageSender) {
-                  //   // Si c'est un message de l'administrateur et l'utilisateur actuel n'est pas l'administrateur, ne l'affiche pas
-                  //   continue;
-                  // }
+                        var messageWidget =
+                            MessageWidget(messageSender, messageText, imageUrl);
+                        messageWidgets.add(messageWidget);
+                      }
 
-                  var messageText = message['text'];
-                  var imageUrl = message['imageUrl'];
-
-                  var messageWidget =  MessageWidget(messageSender, messageText, imageUrl);
-                  messageWidgets.add(messageWidget);
-                }
-
-                return ListView(
-                  reverse: true,
-                  children: [],
-                );
-              },
-            ),
+                      return ListView(
+                        reverse: true,
+                        children: messageWidgets,
+                      );
+                    },
+                  )
+                : const Center(
+                    child: Text('Select a user to start a conversation.'),
+                  ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: <Widget>[
                 IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.camera,
                     color: Color(0xFF002E7F),
                   ),
@@ -199,25 +176,69 @@ void _selectAdminAndSendMessage(String? imageUrl) {
                 Expanded(
                   child: TextField(
                     controller: _messageController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Enter your message...',
                     ),
                   ),
                 ),
                 IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.send,
                     color: Color(0xFF002E7F),
                   ),
-                  onPressed: () => _sendMessage(
-                    recipient: 'admin', // Remplacez 'admin' par l'ID réel de l'administrateur
-                  ),
+                  onPressed: () {
+                    if (_selectedUser.isNotEmpty) {
+                      _sendMessage(recipient: _selectedUser);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content:
+                              Text('Please select a user to send a message.'),
+                        ),
+                      );
+                    }
+                  },
                 ),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  void _showAvailableUsersDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Available Users'),
+          content: _availableAdmins.isNotEmpty
+              ? ListView.builder(
+                  itemCount: _availableAdmins.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(_availableAdmins[index]),
+                      onTap: () {
+                        setState(() {
+                          _selectedUser = _availableAdmins[index];
+                        });
+                        Navigator.of(context).pop();
+                      },
+                    );
+                  },
+                )
+              : const Text('No available users.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -238,11 +259,11 @@ class MessageWidget extends StatelessWidget {
         children: <Widget>[
           Text(
             sender,
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           if (imageUrl != null && imageUrl!.isNotEmpty)
             _isNetworkImage(imageUrl!)
                 ? Image.network(

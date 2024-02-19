@@ -5,9 +5,9 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart'; 
+import 'package:intl/intl.dart';
+import 'package:msgarage/screens/client.dart'; 
 
-import 'client.dart';
 import 'navbar.chat.dart';
 
 class Rendezvous extends StatelessWidget {
@@ -620,7 +620,7 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute<void>(
-                        builder: (BuildContext context) => ClientPage(),
+                        builder: (BuildContext context) => ClientChatPage(),
                       ),
                     );
                   },

@@ -378,7 +378,7 @@ class _SecondPageState extends State<SecondPage> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute<void>(
-                        builder: (BuildContext context) => ClientPage(),
+                        builder: (BuildContext context) => ClientChatPage(),
                       ),
                     );
                   },

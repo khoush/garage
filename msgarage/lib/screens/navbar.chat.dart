@@ -24,7 +24,7 @@ class _StatPageState extends State<StatPage> {
   final List<Widget> _pages = [
     Acceuil(),
     SecondPage(),
-    test(),
+    ThirdPage (),
     FourthPage(),
     ProfilePage(),
     

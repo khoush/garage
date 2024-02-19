@@ -214,7 +214,7 @@ class _AcceuilState extends State<Acceuil> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute<void>(
-                          builder: (BuildContext context) => ClientPage(),
+                          builder: (BuildContext context) => ClientChatPage(),
                         ),
                       );
                     },
