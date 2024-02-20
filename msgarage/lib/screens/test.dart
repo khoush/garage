@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:msgarage/screens/details.dart';
+import 'package:msgarage/screens/secondpage.dart';
 
 class ThirdPage extends StatefulWidget {
   @override
@@ -22,6 +23,13 @@ class _ThirdPageState extends State<ThirdPage> {
           ),
         ),
         centerTitle: true,
+          leading: IconButton(
+          icon: Icon(Icons.arrow_back,
+          color: Colors.white,),
+          onPressed: () {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => SecondPage()));
+          },
+        ),
       ),
       body: Column(
         children: [

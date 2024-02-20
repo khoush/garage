@@ -22,8 +22,8 @@ class _AcceuilState extends State<Acceuil> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF002E7F),
-        title: Text(
+        backgroundColor: const Color(0xFF002E7F),
+        title: const Text(
           'Acceuil',
           style: TextStyle(
             color: Colors.white,
@@ -32,14 +32,12 @@ class _AcceuilState extends State<Acceuil> {
           ),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.notifications, color: Colors.white),
-            onPressed: () {
-              // Add your logic to handle the notification icon click here
-            },
-          ),
-        ],
+        leading: IconButton(
+          icon: const Icon(Icons.notification_add, color: Colors.white),
+          onPressed: () {
+            // Add your logic to handle the menu icon click here
+          },
+        ),
       ),
       body: FutureBuilder<QuerySnapshot>(
         future: FirebaseFirestore.instance.collection('vehicules').get(),
@@ -52,8 +50,8 @@ class _AcceuilState extends State<Acceuil> {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
 
-          List<Map<String, dynamic>> vehiclesData = snapshot.data!.docs
-              .map((DocumentSnapshot document) {
+          List<Map<String, dynamic>> vehiclesData =
+              snapshot.data!.docs.map((DocumentSnapshot document) {
             return document.data() as Map<String, dynamic>;
           }).toList();
 
@@ -70,7 +68,9 @@ class _AcceuilState extends State<Acceuil> {
                   ),
                 ),
               ),
-              for (var i = 0; i < min(initiallyDisplayedVehicles, vehiclesData.length); i++)
+              for (var i = 0;
+                  i < min(initiallyDisplayedVehicles, vehiclesData.length);
+                  i++)
                 Card(
                   elevation: 1,
                   child: Container(
@@ -164,20 +164,25 @@ class _AcceuilState extends State<Acceuil> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        _buildCard(context, "  Ajouter \nun véhicule     ", Colors.white),
-                        _buildCardd(context, "  Tarifs  \net devis          ", Colors.white),
+                        _buildCard(context, "   Ajouter \n un véhicule     ",
+                            Colors.white),
+                        _buildCardd(context, "    Tarifs    \n  et devis          ",
+                            Colors.white),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        _buildCarddd(context, "Vehicule de\nremplacement", Colors.white),
+                        _buildCarddd(
+                            context, "  Vehicule de\nremplacement", Colors.white),
                       ],
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 150,),
+              SizedBox(
+                height: 10,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -243,21 +248,19 @@ class _AcceuilState extends State<Acceuil> {
 Widget _buildCard(BuildContext context, String title, Color color) {
   return GestureDetector(
     onTap: () {
-      // Navigation vers une autre page
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => AnotherPage(title)),
       );
     },
     child: Card(
-      elevation: 5.0, // Ajoute une ombre à la carte
-      color: color,
+      elevation: 3.0, // Ajoute une ombre à la carte
+      color: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0), // Bordure personnalisée
-        // Vous pouvez également ajouter une bordure supplémentaire
+        borderRadius: BorderRadius.circular(15.0),
         side: BorderSide(
-          color: Colors.grey[400]!,
-          width: 1.0,
+          color: Colors.grey.shade100,
+          width: 5.0,
         ),
       ),
       child: Padding(
@@ -266,15 +269,12 @@ Widget _buildCard(BuildContext context, String title, Color color) {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(
-              Icons.star, // Ajoutez un icône personnalisé ici
-              color: Colors.yellow,
-              size: 30.0,
-            ),
-            SizedBox(height: 10.0), // Espacement entre l'icône et le texte
             Text(
               title,
-              style: TextStyle(color: Colors.grey[400], fontSize: 18.0),
+              style: TextStyle(
+                  color: Color(0xFF7A99AC),
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -292,15 +292,14 @@ Widget _buildCardd(BuildContext context, String title, Color color) {
         MaterialPageRoute(builder: (context) => AjoutPage(title)),
       );
     },
-    child: Card(
-      elevation: 5.0, // Ajoute une ombre à la carte
-      color: color,
+   child: Card(
+       elevation: 3.0, // Ajoute une ombre à la carte
+      color: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0), // Bordure personnalisée
-        // Vous pouvez également ajouter une bordure supplémentaire
+        borderRadius: BorderRadius.circular(15.0),
         side: BorderSide(
-          color: Colors.grey[400]!,
-          width: 1.0,
+          color: Colors.grey.shade100,
+          width: 5.0,
         ),
       ),
       child: Padding(
@@ -309,15 +308,12 @@ Widget _buildCardd(BuildContext context, String title, Color color) {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(
-              Icons.star, // Ajoutez un icône personnalisé ici
-              color: Colors.yellow,
-              size: 30.0,
-            ),
-            SizedBox(height: 10.0), // Espacement entre l'icône et le texte
             Text(
               title,
-              style: TextStyle(color: Colors.grey[400], fontSize: 18.0),
+              style: TextStyle(
+                  color: Color(0xFF7A99AC),
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -336,14 +332,13 @@ Widget _buildCarddd(BuildContext context, String title, Color color) {
       );
     },
     child: Card(
-      elevation: 5.0, 
-      color: color,
+      elevation: 3.0, // Ajoute une ombre à la carte
+      color: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0), // Bordure personnalisée
-     
+        borderRadius: BorderRadius.circular(15.0),
         side: BorderSide(
-          color: Colors.grey[400]!,
-          width: 1.0,
+          color: Colors.grey.shade100,
+          width: 5.0,
         ),
       ),
       child: Padding(
@@ -352,15 +347,12 @@ Widget _buildCarddd(BuildContext context, String title, Color color) {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(
-              Icons.star, // Ajoutez un icône personnalisé ici
-              color: Colors.yellow,
-              size: 30.0,
-            ),
-            SizedBox(height: 10.0), // Espacement entre l'icône et le texte
             Text(
               title,
-              style: TextStyle(color: Colors.grey[400], fontSize: 18.0),
+              style: TextStyle(
+                  color: Color(0xFF7A99AC),
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold),
             ),
           ],
         ),

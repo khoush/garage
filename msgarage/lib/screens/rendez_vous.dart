@@ -212,8 +212,15 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
         child: SingleChildScrollView(
           child: Column(
             children: [
-              
-                 
+           
+               Container(
+                width: 110,
+                height: 110, // Adjust the height as needed
+                child: Image.asset(
+                  "assets/images/imgg.png", // Replace with your image path
+                  fit: BoxFit.cover,
+                ),
+              ),  
                  
               SizedBox(height: 20),
               Container(
@@ -254,7 +261,7 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
                     ),
                     suffixIcon: Icon(
                       Icons.person,
-                      color: Colors.grey,
+                      color: Color(0xFF002E7F),
                     ),
                   ),
                 ),
@@ -366,7 +373,7 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
         },
         child: Icon(
           Icons.calendar_today,
-          color: Colors.grey,
+          color: Color(0xFF002E7F),
         ),
       ),
     ),
@@ -415,7 +422,7 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
                     ),
                     suffixIcon: Icon(
                       Icons.lock_clock,
-                      color: Colors.grey,
+                      color: Color(0xFF002E7F),
                     ),
                   ),
                 ),
@@ -457,10 +464,7 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
                         width: 1,
                       ),
                     ),
-                    suffixIcon: Icon(
-                      Icons.arrow_drop_down,
-                      color: Colors.grey,
-                    ),
+                   
                   ),
                 ),
               ),
@@ -501,10 +505,7 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
                         width: 1,
                       ),
                     ),
-                    suffixIcon: Icon(
-                      Icons.calendar_today,
-                      color: Colors.grey,
-                    ),
+                   
                   ),
                 ),
               ),
@@ -558,7 +559,7 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
                       child: ElevatedButton(
                         onPressed: _pickFile,
                         style: ElevatedButton.styleFrom(
-                          primary: Color(0xFF002E7F),
+                          primary: Color(0x7A99AC),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(13),
                           ),
@@ -584,7 +585,7 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: Color(0xFF002E7F),
+                          primary: Color(0x7A99AC),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(13),
                           ),

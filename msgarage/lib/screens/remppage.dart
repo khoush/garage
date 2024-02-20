@@ -17,13 +17,14 @@ class _remplPageState extends State<remplPage> {
     return Scaffold(
        appBar: AppBar(
         backgroundColor: Color(0xFF002E7F),
-        title: Center(
-          child: Image.asset(
-            'assets/images/log.png', // Assurez-vous que le chemin est correct
-            width: 50.0,
-            height: 50.0,
+           title: 
+          Image.asset(
+            'assets/images/igm.png', // Assurez-vous que le chemin est correct
+            width: 70.0,
+            height: 70.0,
           ),
-        ),
+        
+       
         centerTitle: true,
         leading: IconButton(
           icon: Icon(
@@ -319,7 +320,7 @@ final TextEditingController _raisonController = TextEditingController();
         },
         child: Icon(
           Icons.calendar_today,
-          color: Colors.grey,
+          color: Color(0xFF002E7F),
         ),
       ),
                   ),
@@ -369,7 +370,7 @@ final TextEditingController _raisonController = TextEditingController();
                     ),
                      suffixIcon: Icon(
                       Icons.lock_clock,
-                      color: Colors.grey,
+                      color: Color(0xFF002E7F),
                     ),
                   ),
                 ),

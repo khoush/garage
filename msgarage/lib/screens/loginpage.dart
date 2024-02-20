@@ -121,8 +121,8 @@ String userRole = (userSnapshot.data() as Map<String, dynamic>)['role'] ?? 'user
           ),
           SizedBox(width: 20), // Add some space between the images
           Image.asset(
-            'assets/images/arr.jpeg', // Replace with the path to your second image
-            height: 50,
+            'assets/images/imgg.png', // Replace with the path to your second image
+            height: 70,
             width: 150,
           ),
         ],

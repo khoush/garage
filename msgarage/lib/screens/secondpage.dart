@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:msgarage/screens/acceuil.dart';
 import 'package:msgarage/screens/client.dart';
 import 'package:msgarage/screens/rendez_vous.dart';
 
@@ -69,7 +70,7 @@ class _SecondPageState extends State<SecondPage> {
           }
           if (doc.get('Etat') == 'Lavage/Livraison') {
             sliderValue4 = 0.0;
-          } else if (doc.get('Etat') == '') {
+          } else if (doc.get('Etat') == 'Terminer') {
             sliderValue4 = 100.0;
           }
         }
@@ -113,7 +114,7 @@ class _SecondPageState extends State<SecondPage> {
         }
         if (doc.get('Etat') == 'Lavage/Livraison') {
           sliderValue4 = 0.0;
-        } else if (doc.get('Etat') == '') {
+        } else if (doc.get('Etat') == 'Terminer') {
           sliderValue4 = 100.0;
         }
       }
@@ -134,10 +135,11 @@ class _SecondPageState extends State<SecondPage> {
           ),
         ),
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.menu, color: Colors.white),
+      leading: IconButton(
+          icon: Icon(Icons.arrow_back,
+          color: Colors.white,),
           onPressed: () {
-            // Add your logic to handle the menu icon click here
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => Acceuil()));
           },
         ),
       ),
@@ -308,7 +310,7 @@ class _SecondPageState extends State<SecondPage> {
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 12)),
                     Text(''),
-                    Text(''),
+                    Text('Terminer', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12 , color: Colors.white))
                   ],
                 ),
                 Stack(

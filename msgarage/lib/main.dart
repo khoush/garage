@@ -39,7 +39,7 @@ class IntroductionScreen extends StatelessWidget {
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage(
-                'assets/images/logoo.jpg'), // Changer le chemin d'accès à votre image
+                'assets/images/img.png'), // Changer le chemin d'accès à votre image
             fit: BoxFit.cover,
           ),
         ),

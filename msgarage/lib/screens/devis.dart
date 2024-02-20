@@ -14,13 +14,13 @@ class _AjoutPageState extends State<AjoutPage> {
   Widget build(BuildContext context) {
     return Scaffold(appBar: AppBar(
         backgroundColor: Color(0xFF002E7F),
-        title: Center(
-          child: Image.asset(
-            'assets/images/log.png', // Assurez-vous que le chemin est correct
-            width: 50.0,
-            height: 50.0,
+        title: 
+          Image.asset(
+            'assets/images/igm.png', // Assurez-vous que le chemin est correct
+            width: 70.0,
+            height: 70.0,
           ),
-        ),
+        
         centerTitle: true,
         leading: IconButton(
           icon: Icon(
@@ -151,7 +151,7 @@ class _MyFormState extends State<MyForm> {
               SizedBox(height: 1,),
               Center(
                child: Text(
-                    'Veuillez remplir le formulaire ',
+                    ' Veuillez remplir le formulaire ',
                     style: TextStyle(
                       color: Colors.grey,
                       fontSize: 14.0,
