@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:msgarage/screens/ajoutpage.dart';
 import 'package:msgarage/screens/client.dart';
@@ -40,7 +41,9 @@ class _AcceuilState extends State<Acceuil> {
         ),
       ),
       body: FutureBuilder<QuerySnapshot>(
-        future: FirebaseFirestore.instance.collection('vehicules').get(),
+        future: FirebaseFirestore.instance.collection('vehicules')
+        .where('client_id', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -72,16 +75,17 @@ class _AcceuilState extends State<Acceuil> {
                   i < min(initiallyDisplayedVehicles, vehiclesData.length);
                   i++)
                 Card(
-                  elevation: 1,
+                  elevation: 3,
                   child: Container(
-                    height: 120,
+                    height: 130,
                     width: double.infinity,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(vehiclesData[i]['imageUrl'] ?? ''),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                   decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/images/hey.png"), // Replace with your image path
+          fit: BoxFit.cover,
+          
+        ),
+      ),
                     child: SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,7 +94,7 @@ class _AcceuilState extends State<Acceuil> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              'Véhicule: ${vehiclesData[i]['num']}',
+                              '         Véhicule: ${vehiclesData[i]['num']}',
                               style: TextStyle(
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.bold,
@@ -101,7 +105,7 @@ class _AcceuilState extends State<Acceuil> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              '${vehiclesData[i]['Etat']}',
+                              '         ${vehiclesData[i]['Etat']}',
                               style: TextStyle(
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.bold,
@@ -114,7 +118,7 @@ class _AcceuilState extends State<Acceuil> {
                             child: Row(
                               children: [
                                 Text(
-                                  'Entrée n: ${vehiclesData[i]['num']}',
+                                  '            Entrée n: ${vehiclesData[i]['num']}',
                                   style: TextStyle(
                                     fontSize: 12.0,
                                     fontWeight: FontWeight.bold,

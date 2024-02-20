@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:msgarage/screens/navbar.chat.dart';
 
@@ -15,15 +16,12 @@ class _AnotherPageState extends State<AnotherPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF002E7F),
-           title: 
-          Image.asset(
-            'assets/images/igm.png', // Assurez-vous que le chemin est correct
-            width: 70.0,
-            height: 70.0,
-          ),
-        
+        title: Image.asset(
+          'assets/images/igm.png', // Assurez-vous que le chemin est correct
+          width: 70.0,
+          height: 70.0,
+        ),
         centerTitle: true,
-       
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
@@ -46,6 +44,7 @@ class MyForm extends StatefulWidget {
 }
 
 class _MyFormState extends State<MyForm> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _clientController = TextEditingController();
   final TextEditingController _marqueController = TextEditingController();
@@ -53,8 +52,8 @@ class _MyFormState extends State<MyForm> {
   final TextEditingController _matrController = TextEditingController();
   final TextEditingController _kilomController = TextEditingController();
 
-  final TextEditingController _numchController = TextEditingController();
-  final TextEditingController _numchhController = TextEditingController();
+  late TextEditingController _numchController = TextEditingController();
+  late TextEditingController _numchhController = TextEditingController();
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -69,7 +68,8 @@ class _MyFormState extends State<MyForm> {
     String Kilometrage = _kilomController.text;
 
     try {
-      await _firestore.collection('nouveauvehicules').add({
+      var currentUser;
+      await _firestore.collection('vehicules').add({
         'email': email,
         'client': client,
         'numch': numch,
@@ -78,6 +78,7 @@ class _MyFormState extends State<MyForm> {
         'modele': modele,
         'marque': marque,
         'Kilométrage': Kilometrage,
+        'client_id' :  FirebaseAuth.instance.currentUser!.uid,
       });
 
       // Clear text controllers after saving data
@@ -129,27 +130,27 @@ class _MyFormState extends State<MyForm> {
       ),
       child: Padding(
         padding: const EdgeInsets.all(10.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Text(
-                    'Ajouter votre Citroën',
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 76, 112, 107),
-                      fontSize: 17.0,
-                      fontWeight: FontWeight.bold,
+        child: Form(
+          key: _formKey, // Assign _formKey to Form widget
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text(
+                      'Ajouter votre Citroën',
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 76, 112, 107),
+                        fontSize: 17.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                
-                  
                 ),
-              ),
-              SizedBox(height: 1,),
-              Center(
-               child: Text(
+                SizedBox(height: 1,),
+                Center(
+                  child: Text(
                     '  Veuillez remplir le formulaire ',
                     style: TextStyle(
                       color: Colors.grey,
@@ -157,9 +158,9 @@ class _MyFormState extends State<MyForm> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-              ),
-              SizedBox(height: 5),
-              Container(
+                ),
+                SizedBox(height: 5),
+                 Container(
                 width: 350,
                 height: 50,
                 decoration: BoxDecoration(
@@ -409,116 +410,133 @@ class _MyFormState extends State<MyForm> {
               SizedBox(
                 height: 5,
               ),
-              Container(
-                width: 350,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.white.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
+
+               Container(
+  width: 350,
+  height: 50,
+  decoration: BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(20),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.white.withOpacity(0.5),
+        spreadRadius: 2,
+        blurRadius: 5,
+        offset: Offset(0, 3),
+      ),
+    ],
+  ),
+  child: TextFormField(
+    controller: _numchController,
+    enabled: true,
+    decoration: InputDecoration(
+      hintText: "Num de châssis",
+      hintStyle: TextStyle(
+        fontSize: 14.0,
+        color: Colors.grey,
+      ),
+      border: UnderlineInputBorder(
+        borderSide: BorderSide(
+          color: Colors.white,
+          width: 1,
+        ),
+      ),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(
+          color: Colors.white,
+          width: 1,
+        ),
+      ),
+    ),
+    validator: (value) {
+      if (value == null || value.isEmpty) {
+        return 'Veuillez entrer le numéro de châssis';
+      } else if (value.length < 17) {
+        return 'Le numéro de châssis doit contenir au moins 17 caractères';
+      }
+      return null;
+    },
+  ),
+),
+
+                SizedBox(
+                  height: 5,
                 ),
-                child: TextFormField(
-                  controller: _numchController,
-                  enabled: true,
-                  decoration: InputDecoration(
-                    hintText: "Num chassis",
-                    hintStyle: TextStyle(
-                      fontSize: 14.0,
-                      color: Colors.grey,
-                    ),
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                        width: 1,
+                Container(
+                  width: 350,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.white.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: TextFormField(
+                    controller: _numchhController,
+                    enabled: true,
+                    decoration: InputDecoration(
+                      hintText: "Réecrire le numéro de châssis",
+                      hintStyle: TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.grey,
+                      ),
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.white,
+                          width: 1,
+                        ),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.white,
+                          width: 1,
+                        ),
                       ),
                     ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
+                    validator: (value) {
+                      if (value != _numchController.text) {
+                        return 'Les numéros de châssis ne correspondent pas';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  width: 350,
+                  height: 60,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        saveDataToFirebase();
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: Color(0xFF002E7F),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                    ),
+                    child: Text(
+                      'Ajouter',
+                      style: TextStyle(
+                        fontSize: 14.0,
                         color: Colors.white,
-                        width: 1,
                       ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Container(
-                width: 350,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.white.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: TextFormField(
-                  controller: _numchhController,
-                  enabled: true,
-                  decoration: InputDecoration(
-                    hintText: "Réecrire",
-                    hintStyle: TextStyle(
-                      fontSize: 14.0,
-                      color: Colors.grey,
-                    ),
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Container(
-                width: 350,
-                height: 60,
-                child: ElevatedButton(
-                  onPressed: () {
-                    saveDataToFirebase();
-                    // Additional logic or navigation if needed
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Color(0xFF002E7F),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                  ),
-                  child: Text(
-                    'Ajouter',
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 10,),
-           
-            ],
+                SizedBox(height: 10),
+              ],
+            ),
           ),
         ),
       ),
