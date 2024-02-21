@@ -35,7 +35,7 @@ class _SecondPageState extends State<SecondPage> {
       // Parcourir les documents de la collection
       snapshot.docs.forEach((DocumentSnapshot<Map<String, dynamic>> doc) {
         // Extraire l'immatriculation du document
-        String immatriculation = doc.get('num');
+        String immatriculation = doc.get('matricule');
 
         // Ajouter l'immatriculation à la liste
         setState(() {
@@ -45,7 +45,7 @@ class _SecondPageState extends State<SecondPage> {
             selectedMat = mat.first;
           }
         });
-        if (doc.get('num') == selectedMat) {
+        if (doc.get('matricule') == selectedMat) {
           // Mettre à jour les sliders en fonction de l'état
           if (doc.get('Etat') == 'Reception') {
             sliderValue1 = 0.0;
@@ -89,7 +89,7 @@ class _SecondPageState extends State<SecondPage> {
     sliderValue4 = 0.0;
 
     snapshot.docs.forEach((DocumentSnapshot<Map<String, dynamic>> doc) {
-      if (doc.get('num') == selectedMat) {
+      if (doc.get('matricule') == selectedMat) {
         // Mettreon mtea slider baad test tarjaa le 0 ?eyy bch tab9a ken resultat jdida behy fhemtek yatyk saha ena makhamtesh feha ama najmou mithel naamlouha par exemple moush yarj3ou lel 0 aka l point lekbira heki tetnaha completement w ela tarjaa le 0 khyr ?lmochkla howa slider manetssawerch thama faza bch tna7i beha athika!! aahfhemtek
         if (doc.get('Etat') == 'Reception') {
           sliderValue1 = 0.0;

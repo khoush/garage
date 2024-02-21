@@ -157,13 +157,12 @@ final TextEditingController _raisonController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(
-              "assets/images/arrr.jpeg"), // Replace with your image path
-          fit: BoxFit.cover,
-        ),
-      ),
+    decoration: BoxDecoration(
+  image: DecorationImage(
+    image: AssetImage("assets/images/conn.jpg"),
+    fit: BoxFit.cover, // Utilisez BoxFit.cover pour couvrir l'écran sans déformation
+  ),
+),
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: SingleChildScrollView(
@@ -175,7 +174,7 @@ final TextEditingController _raisonController = TextEditingController();
                   child: Text(
                     'Demande de Vehicule \n   de remplacements',
                     style: TextStyle(
-                      color: Color.fromARGB(255, 76, 112, 107),
+                      color: Color(0xFF7A99AC),
                       fontSize: 17.0,
                       fontWeight: FontWeight.bold,
                     ),

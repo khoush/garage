@@ -559,7 +559,7 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
                       child: ElevatedButton(
                         onPressed: _pickFile,
                         style: ElevatedButton.styleFrom(
-                          primary: Color(0x7A99AC),
+                          primary: Color(0xFF7A99AC),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(13),
                           ),
@@ -585,7 +585,7 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: Color(0x7A99AC),
+                          primary: Color(0xFF7A99AC),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(13),
                           ),

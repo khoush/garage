@@ -13,15 +13,16 @@ class FourthPage extends StatefulWidget {
 
 class _FourthPageState extends State<FourthPage> {
   List<String> mat = [];
-  String selectedMat = ''; 
-    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  String selectedMat = '';
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-   @override
+  @override
   void initState() {
     super.initState();
     _fetchImmatriculations();
   }
-   late QuerySnapshot<Map<String, dynamic>> snapshot;
+
+  late QuerySnapshot<Map<String, dynamic>> snapshot;
   Future<void> _fetchImmatriculations() async {
     try {
       // Récupérer la collection 'véhicules' depuis Firestore
@@ -30,7 +31,7 @@ class _FourthPageState extends State<FourthPage> {
       // Parcourir les documents de la collection
       snapshot.docs.forEach((DocumentSnapshot<Map<String, dynamic>> doc) {
         // Extraire l'immatriculation du document
-        String immatriculation = doc.get('num');
+        String immatriculation = doc.get('matricule');
 
         // Ajouter l'immatriculation à la liste
         setState(() {
@@ -40,7 +41,6 @@ class _FourthPageState extends State<FourthPage> {
             selectedMat = mat.first;
           }
         });
-      
       });
     } catch (e) {
       print('Erreur lors de la récupération des immatriculations : $e');
@@ -53,10 +53,12 @@ class _FourthPageState extends State<FourthPage> {
 
     return querySnapshot.docs;
   }
-   Future<List<DocumentSnapshot>> getVehicleDataByMatricule(String matricule) async {
+
+  Future<List<DocumentSnapshot>> getVehicleDataByMatricule(
+      String matricule) async {
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection('vehicules')
-        .where('num', isEqualTo: matricule)
+        .where('matricule', isEqualTo: matricule)
         .get();
 
     return querySnapshot.docs;
@@ -76,11 +78,14 @@ class _FourthPageState extends State<FourthPage> {
           ),
         ),
         centerTitle: true,
-          leading: IconButton(
-          icon: Icon(Icons.arrow_back,
-          color: Colors.white,),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
           onPressed: () {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => ThirdPage()));
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (_) => ThirdPage()));
           },
         ),
       ),
@@ -91,26 +96,26 @@ class _FourthPageState extends State<FourthPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               DropdownButtonFormField<String>(
-              value: selectedMat,
-              onChanged: (String? newValue) {
-                setState(() {
-                  selectedMat = newValue!;
-                  print(selectedMat); //haw ybadel !!
-                });
-               
-              },
-              items: mat.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              decoration: const InputDecoration(
-                labelText: 'Immatriculation',
-                border: OutlineInputBorder(),
+                value: selectedMat,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedMat = newValue!;
+                    print(selectedMat); //haw ybadel !!
+                  });
+                },
+                items: mat.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                decoration: const InputDecoration(
+                  labelText: 'Immatriculation',
+                  border: OutlineInputBorder(),
+                ),
               ),
-            ),
-              SizedBox(height: 10.0), // Add some spacing between dropdown and cards
+              SizedBox(
+                  height: 10.0), // Add some spacing between dropdown and cards
               FutureBuilder<List<DocumentSnapshot>>(
                 future: getVehicleDataByMatricule(selectedMat),
                 builder: (context, snapshot) {
@@ -130,25 +135,28 @@ class _FourthPageState extends State<FourthPage> {
                             vehicleList[index].data() as Map<String, dynamic>;
 
                         // Extracting relevant data
-                        String num = vehicleData['num'] ?? '';
-                        String km = vehicleData['km'] ?? '';
+                        String matricule = vehicleData['matricule'] ?? '';
+                        String km = vehicleData['Kilométrage'] ?? '';
                         String vidange = vehicleData['vidange'] ?? '';
                         String controle = vehicleData['controle'] ?? '';
+                        String derniere = vehicleData['derniere'] ?? '';
 
                         // Use the data in your UI
                         return buildCardWithBar(
                           'assets/images/bleu.png',
-                          '$num                      $km ',
-                          '$vidange vidange                           $controle Controle techniques',
-                        );
-                        
-                      },
+                          ' $matricule                         $km ',
+                          '$controle Controle techniques                   $vidange vidange \n \n Dernière visite : $derniere',
                       
+
+                        );
+                      },
                     );
                   }
                 },
               ),
-               SizedBox(height: 150,),
+              SizedBox(
+                height: 150,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -211,50 +219,53 @@ class _FourthPageState extends State<FourthPage> {
   }
 
   Widget buildCardWithBar(String imagePath, String title, String subtitle) {
-  return Row(
-    children: [
-      Container(
-        height: 100.0, // Set the desired height for the bar
-        width: 7.0, // Set the desired width for the bar
-        color: Color(0xFF002E7F), // Set the color of the bar
-      ),
-      Expanded(
-        child: Card(
-          child: Container(
-            height: 100.0,
-            width: 50,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(imagePath),
-                fit: BoxFit.cover,
+    return Row(
+      children: [
+        Container(
+          height: 100.0, // Set the desired height for the bar
+          width: 7.0, // Set the desired width for the bar
+          color: Color(0xFF002E7F), // Set the color of the bar
+        ),
+        Expanded(
+          child: Card(
+            child: Container(
+              height: 100.0,
+              width: 50,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(imagePath),
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),
-            child: ListTile(
-              title: Row(
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Image.asset(
-                    'assets/images/km.png',
-                    width: 25.0,
-                    height: 22.0,
-                  ),
-                ],
-              ),
-              subtitle: Text(
-                subtitle,
-                style: TextStyle(
-                    fontSize: 12, fontWeight: FontWeight.bold),
+              child: ListTile(
+                title: Row(
+                  children: [
+                 
+                    Text(
+                      title,
+                      style: TextStyle(fontWeight: FontWeight.bold,
+                      color: Color(0xFF002E7F),
+                      ),
+                    ),
+                       Image.asset(
+                      'assets/images/km.png',
+                      width: 25.0,
+                      height: 22.0,
+                      
+                    ),
+                    
+                  ],
+                ),
+                subtitle: Text(
+                  subtitle,
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold ),
+                ),
+                
               ),
             ),
           ),
         ),
-      ),
-      
-    ],
-  );
-}
-
+      ],
+    );
+  }
 }

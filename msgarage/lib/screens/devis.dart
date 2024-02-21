@@ -124,7 +124,7 @@ class _MyFormState extends State<MyForm> {
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage(
-              "assets/images/arrr.jpeg"), // Replace with your image path
+              "assets/images/conn.jpg"), // Replace with your image path
           fit: BoxFit.cover,
         ),
       ),
@@ -139,7 +139,7 @@ class _MyFormState extends State<MyForm> {
                   child: Text(
                     'Demande de Devis',
                     style: TextStyle(
-                      color: Color.fromARGB(255, 76, 112, 107),
+                      color: Color(0xFF7A99AC),
                       fontSize: 17.0,
                       fontWeight: FontWeight.bold,
                     ),
@@ -456,7 +456,7 @@ class _MyFormState extends State<MyForm> {
                 width: 350,
                 height: 50,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Colors.transparent,
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
@@ -498,7 +498,7 @@ class _MyFormState extends State<MyForm> {
                 width: 350,
                 height: 50,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Colors.transparent,
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(

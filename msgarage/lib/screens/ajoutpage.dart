@@ -62,23 +62,33 @@ class _MyFormState extends State<MyForm> {
     String client = _clientController.text;
     String numch = _numchhController.text;
     String numchh = _numchController.text;
-    String matr = _matrController.text;
+    String matricule= _matrController.text;
     String modele = _modeleController.text;
     String marque = _marqueController.text;
     String Kilometrage = _kilomController.text;
 
     try {
       var currentUser;
+      var accident;
+      var vidange;
+      var controle;
+      var date;
+      var Etat;
       await _firestore.collection('vehicules').add({
         'email': email,
         'client': client,
         'numch': numch,
         'numchh': numchh,
-        'matr': matr,
+        'matricule': matricule,
         'modele': modele,
         'marque': marque,
         'Kilométrage': Kilometrage,
         'client_id' :  FirebaseAuth.instance.currentUser!.uid,
+        'accident' : accident,
+        'vidange' : vidange,
+        'controle' : controle,
+        'date' : date,
+        'Etat' : Etat ,
       });
 
       // Clear text controllers after saving data
@@ -141,7 +151,7 @@ class _MyFormState extends State<MyForm> {
                     child: Text(
                       'Ajouter votre Citroën',
                       style: TextStyle(
-                        color: Color.fromARGB(255, 76, 112, 107),
+                        color: Color(0xFF7A99AC),
                         fontSize: 17.0,
                         fontWeight: FontWeight.bold,
                       ),

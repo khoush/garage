@@ -33,17 +33,22 @@ class _AcceuilState extends State<Acceuil> {
           ),
         ),
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.notification_add, color: Colors.white),
-          onPressed: () {
-            // Add your logic to handle the menu icon click here
-          },
-        ),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(
+              Icons.notification_add,
+              color: Colors.white,
+            ),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: FutureBuilder<QuerySnapshot>(
-        future: FirebaseFirestore.instance.collection('vehicules')
-        .where('client_id', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-        .get(),
+        future: FirebaseFirestore.instance
+            .collection('vehicules')
+            .where('client_id',
+                isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+            .get(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -75,17 +80,18 @@ class _AcceuilState extends State<Acceuil> {
                   i < min(initiallyDisplayedVehicles, vehiclesData.length);
                   i++)
                 Card(
-                  elevation: 3,
+                  elevation: 8,
                   child: Container(
                     height: 130,
                     width: double.infinity,
-                   decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage("assets/images/hey.png"), // Replace with your image path
-          fit: BoxFit.cover,
-          
-        ),
-      ),
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(
+                          "assets/images/hey.png",
+                        ), // Replace with your image path
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                     child: SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,7 +100,7 @@ class _AcceuilState extends State<Acceuil> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              '         Véhicule: ${vehiclesData[i]['num']}',
+                              '         Véhicule: ${vehiclesData[i]['matricule']}',
                               style: TextStyle(
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.bold,
@@ -118,7 +124,7 @@ class _AcceuilState extends State<Acceuil> {
                             child: Row(
                               children: [
                                 Text(
-                                  '            Entrée n: ${vehiclesData[i]['num']}',
+                                  '            Entrée n: ${vehiclesData[i]['matricule']}',
                                   style: TextStyle(
                                     fontSize: 12.0,
                                     fontWeight: FontWeight.bold,
@@ -170,15 +176,17 @@ class _AcceuilState extends State<Acceuil> {
                       children: [
                         _buildCard(context, "   Ajouter \n un véhicule     ",
                             Colors.white),
-                        _buildCardd(context, "    Tarifs    \n  et devis          ",
+                        _buildCardd(
+                            context,
+                            "    Tarifs    \n  et devis          ",
                             Colors.white),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        _buildCarddd(
-                            context, "  Vehicule de\nremplacement", Colors.white),
+                        _buildCarddd(context, "  Vehicule de\nremplacement",
+                            Colors.white),
                       ],
                     ),
                   ],
@@ -296,8 +304,8 @@ Widget _buildCardd(BuildContext context, String title, Color color) {
         MaterialPageRoute(builder: (context) => AjoutPage(title)),
       );
     },
-   child: Card(
-       elevation: 3.0, // Ajoute une ombre à la carte
+    child: Card(
+      elevation: 3.0, // Ajoute une ombre à la carte
       color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
