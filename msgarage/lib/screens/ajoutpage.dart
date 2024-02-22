@@ -74,6 +74,8 @@ class _MyFormState extends State<MyForm> {
       var controle;
       var date;
       var Etat;
+      var derniere;
+     var  imageUrl;
       await _firestore.collection('vehicules').add({
         'email': email,
         'client': client,
@@ -89,6 +91,8 @@ class _MyFormState extends State<MyForm> {
         'controle' : controle,
         'date' : date,
         'Etat' : Etat ,
+        'derniere' : derniere,
+        'imageUrl' : imageUrl,
       });
 
       // Clear text controllers after saving data

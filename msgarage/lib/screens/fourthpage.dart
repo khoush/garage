@@ -144,8 +144,8 @@ class _FourthPageState extends State<FourthPage> {
                         // Use the data in your UI
                         return buildCardWithBar(
                           'assets/images/bleu.png',
-                          ' $matricule                         $km ',
-                          '$controle Controle techniques                   $vidange vidange \n \n Dernière visite : $derniere',
+                          '   $matricule              ','$km' ,
+                          '\n $controle Controle techniques             $vidange vidange\n\n  Dernière visite : $derniere',
                       
 
                         );
@@ -218,7 +218,9 @@ class _FourthPageState extends State<FourthPage> {
     );
   }
 
-  Widget buildCardWithBar(String imagePath, String title, String subtitle) {
+  Widget buildCardWithBar(String imagePath, String title, String titlee, String subtitle) {
+   
+    
     return Row(
       children: [
         Container(
@@ -228,9 +230,10 @@ class _FourthPageState extends State<FourthPage> {
         ),
         Expanded(
           child: Card(
+            elevation: 2, 
             child: Container(
-              height: 100.0,
-              width: 50,
+              height: 120.0,
+              width: 55,
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage(imagePath),
@@ -238,24 +241,50 @@ class _FourthPageState extends State<FourthPage> {
                 ),
               ),
               child: ListTile(
-                title: Row(
-                  children: [
-                 
-                    Text(
-                      title,
-                      style: TextStyle(fontWeight: FontWeight.bold,
-                      color: Color(0xFF002E7F),
-                      ),
+                title:  Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(5.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    color: const Color(0xFF002E7F),
+                  ),
+                  child: Text(
+                    '$selectedMat',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12.0,
+                      fontWeight: FontWeight.bold,
                     ),
-                       Image.asset(
+                  ),
+                  
+                ),
+                SizedBox(width: 100 ,),
+                Image.asset(
                       'assets/images/km.png',
                       width: 25.0,
-                      height: 22.0,
+                      height: 25.0,
                       
                     ),
+                    SizedBox(width: 5,),
+                     Container(
+                  
+                 
+                  child: Text(
                     
-                  ],
+                    ' $titlee ',
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.bold,
+                      
+                    ),
+                  ),
+                  
                 ),
+              ],
+            ),
                 subtitle: Text(
                   subtitle,
                   style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold ),

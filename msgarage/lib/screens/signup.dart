@@ -61,16 +61,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
               Row( // Use Row instead of Column
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(
-            'assets/images/logo.png',
+         Image.asset(
+            'assets/images/logg.png',
             height: 100,
-            width: 150,
+            width: 70,
           ),
-          SizedBox(width: 20), // Add some space between the images
+          SizedBox(width: 200), // Add some space between the images
           Image.asset(
             'assets/images/imgg.png', // Replace with the path to your second image
-            height: 70,
-            width: 150,
+            height: 80,
+            width: 50,
           ),
         ],
       ),
@@ -84,6 +84,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  
+                 
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Text(
+                    "Veuillez introduire ces informations ",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 13,
+                      
+                    ),
+                  ),
+                  
                  
                 ),
                 SizedBox(height: 20),

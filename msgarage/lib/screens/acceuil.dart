@@ -80,15 +80,13 @@ class _AcceuilState extends State<Acceuil> {
                   i < min(initiallyDisplayedVehicles, vehiclesData.length);
                   i++)
                 Card(
-                  elevation: 8,
+                  elevation: 3,
                   child: Container(
-                    height: 130,
+                    height: 110,
                     width: double.infinity,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage(
-                          "assets/images/hey.png",
-                        ), // Replace with your image path
+                        image: NetworkImage(vehiclesData[i]['imageUrl'] ?? ''),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -100,7 +98,7 @@ class _AcceuilState extends State<Acceuil> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              '         Véhicule: ${vehiclesData[i]['matricule']}',
+                              '     Véhicule: ${vehiclesData[i]['matricule']}',
                               style: TextStyle(
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.bold,
@@ -109,22 +107,23 @@ class _AcceuilState extends State<Acceuil> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              '         ${vehiclesData[i]['Etat']}',
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.red,
-                              ),
-                            ),
-                          ),
+  padding: const EdgeInsets.all(8.0),
+  child: Text(
+    '     ${vehiclesData[i]['Etat']}',
+    style: TextStyle(
+      fontSize: 16.0,
+      fontWeight: FontWeight.bold,
+      color: _getColorForEtat(vehiclesData[i]['Etat']),
+    ),
+  ),
+),
+
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Row(
                               children: [
                                 Text(
-                                  '            Entrée n: ${vehiclesData[i]['matricule']}',
+                                  '      Entrée n: ${vehiclesData[i]['matricule']}',
                                   style: TextStyle(
                                     fontSize: 12.0,
                                     fontWeight: FontWeight.bold,
@@ -266,21 +265,26 @@ Widget _buildCard(BuildContext context, String title, Color color) {
       );
     },
     child: Card(
-      elevation: 3.0, // Ajoute une ombre à la carte
+      elevation: 3.0,
+      // Ajoute une ombre à la carte
       color: Colors.white,
+
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
+        borderRadius: BorderRadius.circular(25.0),
         side: BorderSide(
-          color: Colors.grey.shade100,
-          width: 5.0,
+          color: Color(0xFF7A99AC),
+          width: 2.0,
         ),
       ),
       child: Padding(
+
         padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            
+            
             Text(
               title,
               style: TextStyle(
@@ -308,10 +312,10 @@ Widget _buildCardd(BuildContext context, String title, Color color) {
       elevation: 3.0, // Ajoute une ombre à la carte
       color: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-        side: BorderSide(
-          color: Colors.grey.shade100,
-          width: 5.0,
+        borderRadius: BorderRadius.circular(25.0),
+       side: BorderSide(
+          color: Color(0xFF7A99AC),
+          width: 2.0,
         ),
       ),
       child: Padding(
@@ -347,10 +351,10 @@ Widget _buildCarddd(BuildContext context, String title, Color color) {
       elevation: 3.0, // Ajoute une ombre à la carte
       color: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
+        borderRadius: BorderRadius.circular(25.0),
         side: BorderSide(
-          color: Colors.grey.shade100,
-          width: 5.0,
+          color: Color(0xFF7A99AC),
+          width: 2.0,
         ),
       ),
       child: Padding(
@@ -371,4 +375,22 @@ Widget _buildCarddd(BuildContext context, String title, Color color) {
       ),
     ),
   );
+}
+Color _getColorForEtat(String Etat) {
+  switch (Etat) {
+    case 'Reception':
+      return Colors.grey;
+    case 'Devis':
+      return Colors.yellow;
+    case 'Validation':
+      return Colors.orange;
+    case 'En attente des pieces':
+      return Colors.red;
+    case 'Montage':
+      return Colors.blue;
+    case 'Terminer':
+      return Colors.green;
+    default:
+      return Colors.black; // Couleur par défaut ou à ajuster selon votre choix.
+  }
 }

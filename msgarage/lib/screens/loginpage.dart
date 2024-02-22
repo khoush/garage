@@ -115,15 +115,15 @@ String userRole = (userSnapshot.data() as Map<String, dynamic>)['role'] ?? 'user
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.asset(
-            'assets/images/logo.png',
+            'assets/images/logg.png',
             height: 100,
-            width: 150,
+            width: 70,
           ),
-          SizedBox(width: 20), // Add some space between the images
+          SizedBox(width: 200), // Add some space between the images
           Image.asset(
             'assets/images/imgg.png', // Replace with the path to your second image
             height: 70,
-            width: 150,
+            width: 50,
           ),
         ],
       ),

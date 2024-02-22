@@ -172,7 +172,7 @@ final TextEditingController _raisonController = TextEditingController();
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Text(
-                    'Demande de Vehicule \n   de remplacements',
+                    'Demande de Vehicule \n   de remplacement',
                     style: TextStyle(
                       color: Color(0xFF7A99AC),
                       fontSize: 17.0,

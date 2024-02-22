@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:msgarage/screens/details.dart';
 import 'package:msgarage/screens/secondpage.dart';
 
@@ -9,6 +9,8 @@ class ThirdPage extends StatefulWidget {
 }
 
 class _ThirdPageState extends State<ThirdPage> {
+  TextEditingController searchController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,95 +33,122 @@ class _ThirdPageState extends State<ThirdPage> {
           },
         ),
       ),
-      body: Stack(
+      body: Column(
         children: [
-          // Background Image
-          Positioned.fill(
-            child: Image.asset(
-              'assets/images/conn.jpg', // Update with your image file name
-              fit: BoxFit.cover,
+          // Search Bar Container
+          Container(
+            padding: const EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(15.0),
+                bottomRight: Radius.circular(15.0),
+              ),
+            ),
+            child: Container(
+              width: 200,
+              padding: const EdgeInsets.symmetric(horizontal: 26.0),
+              decoration: BoxDecoration(
+                color: const Color(0xFF002E7F),
+                borderRadius: BorderRadius.circular(40.0),
+              ),
+              child: TextField(
+                controller: searchController,
+                decoration: InputDecoration(
+                  hintText: 'chercher un véhicule',
+                  hintStyle: TextStyle(color: Colors.white),
+                  border: InputBorder.none,
+                  filled: true,
+                  fillColor: const Color(0xFF002E7F),
+                ),
+                onChanged: (value) {
+                  // Trigger the rebuild of the FutureBuilder with the new query
+                  setState(() {});
+                },
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ),
 
-          Column(
-            children: [
-              Expanded(
-                child: FutureBuilder<QuerySnapshot>(
-                  future:
-                      FirebaseFirestore.instance.collection('vehicules').get(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    }
+          // Expanded ListView for displaying vehicles
+          Expanded(
+            child: FutureBuilder<QuerySnapshot>(
+              future: FirebaseFirestore.instance.collection('vehicules').get(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
 
-                    if (snapshot.hasError) {
-                      return Center(
-                          child: Text("Erreur de chargement des données"));
-                    }
+                if (snapshot.hasError) {
+                  return Center(child: Text("Erreur de chargement des données"));
+                }
 
-                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                      return Center(child: Text("Aucun véhicule trouvé"));
-                    }
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return Center(child: Text("Aucun véhicule trouvé"));
+                }
 
-                    return ListView.builder(
-                      itemCount: snapshot.data!.docs.length,
-                      itemBuilder: (context, index) {
-                        var vehicule = snapshot.data!.docs[index];
+                // Filter the data based on the search query
+                var filteredData = snapshot.data!.docs.where((vehicule) {
+                  // Assuming 'matricule' is the field you want to filter
+                  String matricule = vehicule['matricule'] ?? '';
+                  return matricule.toLowerCase().contains(searchController.text.toLowerCase());
+                }).toList();
 
-                        return Container(
-                          margin: EdgeInsets.all(8.0),
-                          padding: EdgeInsets.all(12.0),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15.0),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.3),
-                                spreadRadius: 2,
-                                blurRadius: 5,
-                                offset: Offset(0, 3),
-                              ),
-                            ],
+                return ListView.builder(
+                  itemCount: filteredData.length,
+                  itemBuilder: (context, index) {
+                    var vehicule = filteredData[index];
+
+                    return Container(
+                      margin: EdgeInsets.all(8.0),
+                      padding: EdgeInsets.all(12.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.3),
+                            spreadRadius: 2,
+                            blurRadius: 5,
+                            offset: Offset(0, 3),
                           ),
-                          child: Row(
+                        ],
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  buildRichText("Véhicule   ",
-                                      vehicule['matricule'], FontWeight.bold),
-                                  buildRichText("Date          ", vehicule['date']),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  buildRichText("Client        ", vehicule['client']),
-                                ],
+                              buildRichText(
+                                  "Véhicule   ", vehicule['matricule'], FontWeight.bold),
+                              buildRichText("Date          ", vehicule['date']),
+                              SizedBox(
+                                height: 20,
                               ),
-                              // Déplacez l'IconButton ici à la fin de la ligne
-                              IconButton(
-                                icon: Icon(Icons.visibility, color: Color(0xFF002E7F)),
-                                onPressed: () {
-                                  // Naviguer vers une autre page lorsque l'IconButton est cliqué
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          DetailsPage(documentID: vehicule.id),
-                                    ),
-                                  );
-                                },
-                              ),
+                              buildRichText("Client        ", vehicule['client']),
                             ],
                           ),
-                        );
-                      },
+                          IconButton(
+                            icon: Icon(Icons.visibility, color: Color(0xFF002E7F)),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      DetailsPage(documentID: vehicule.id),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                     );
                   },
-                ),
-              ),
-            ],
+                );
+              },
+            ),
           ),
         ],
       ),
