@@ -119,7 +119,7 @@ class _SecondPageState extends State<SecondPage> {
         }
       }
     });
-  } //hna manech  nraj3ou fe les valeur legdom 0!!!!
+  } 
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +154,8 @@ class _SecondPageState extends State<SecondPage> {
               onChanged: (String? newValue) {
                 setState(() {
                   selectedMat = newValue!;
-                  print(selectedMat); //haw ybadel !!
+                  print(selectedMat); 
+                  
                 });
                 test();
               },
@@ -221,10 +222,11 @@ class _SecondPageState extends State<SecondPage> {
                   max: 100.0,
                   divisions: 100,
                   label: '$sliderValue1',
-                  activeColor: Colors.green,
+                  activeColor: _getSliderColor(sliderValue1),
+                 
                   inactiveColor: Colors.grey,
                   onChangeEnd: (double value) {
-                    // Add any specific actions when the slider interaction ends
+                    
                   },
                 ),
               ],
@@ -259,7 +261,7 @@ class _SecondPageState extends State<SecondPage> {
                   max: 100.0,
                   divisions: 100,
                   label: '$sliderValue2',
-                  activeColor: Colors.green,
+                 activeColor: _getSliderColor(sliderValue2),
                   inactiveColor: Colors.grey,
                 ),
               ],
@@ -294,7 +296,7 @@ class _SecondPageState extends State<SecondPage> {
                   max: 100.0,
                   divisions: 100,
                   label: '$sliderValue3',
-                  activeColor: Colors.green,
+                  activeColor: _getSliderColor(sliderValue3),
                   inactiveColor: Colors.grey,
                 ),
               ],
@@ -326,7 +328,7 @@ class _SecondPageState extends State<SecondPage> {
                       max: 100.0,
                       divisions: 100,
                       label: '$sliderValue4',
-                      activeColor: Colors.green,
+                     activeColor: _getSliderColor(sliderValue4),
                       inactiveColor: Colors.grey,
                     ),
                     if (sliderValue4 == 100.0)
@@ -402,5 +404,14 @@ class _SecondPageState extends State<SecondPage> {
         ),
       ),
     );
+  }
+}
+Color _getSliderColor(double value) {
+  if (value == 0.0) {
+    return Colors.grey; // Set initial color when the value is 0
+  } else if (value == 100.0) {
+    return Colors.green; // Set color when the value is 100
+  } else {
+    return Colors.blue; // Set color for other values as needed
   }
 }
