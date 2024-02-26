@@ -416,6 +416,48 @@ final TextEditingController _raisonController = TextEditingController();
                   ),
                 ),
               ),
+               SizedBox(
+                height: 20,
+              ),
+               Container(
+                width: 350,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.white.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: TextFormField(
+                  controller: _matrController,
+                  enabled: true,
+                  decoration: InputDecoration(
+                    hintText: "Raison",
+                    hintStyle: TextStyle(
+                      fontSize: 14.0,
+                      color: Colors.grey,
+                    ),
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                        width: 1,
+                      ),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
              
               
              

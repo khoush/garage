@@ -61,6 +61,7 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
      late DateTime _selectedDate;
      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
+      
        List<String> _servicesList = ['Entretien', 'Carrosserie', 'Diagnostic'];
   List<String> _selectedServices = [];
 

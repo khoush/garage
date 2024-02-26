@@ -155,7 +155,7 @@ class _FourthPageState extends State<FourthPage> {
                 },
               ),
               SizedBox(
-                height: 150,
+                height: 322,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -224,7 +224,7 @@ class _FourthPageState extends State<FourthPage> {
     return Row(
       children: [
         Container(
-          height: 100.0, // Set the desired height for the bar
+          height: 110.0, // Set the desired height for the bar
           width: 7.0, // Set the desired width for the bar
           color: Color(0xFF002E7F), // Set the color of the bar
         ),
@@ -260,7 +260,7 @@ class _FourthPageState extends State<FourthPage> {
                   ),
                   
                 ),
-                SizedBox(width: 100 ,),
+                SizedBox(width: 91 ,),
                 Image.asset(
                       'assets/images/km.png',
                       width: 25.0,

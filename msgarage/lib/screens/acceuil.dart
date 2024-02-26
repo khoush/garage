@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:msgarage/screens/ajoutpage.dart';
 import 'package:msgarage/screens/client.dart';
 import 'package:msgarage/screens/devis.dart';
+import 'package:msgarage/screens/notifpage.dart';
 import 'package:msgarage/screens/remppage.dart';
 import 'package:msgarage/screens/rendez_vous.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Acceuil extends StatefulWidget {
   const Acceuil({Key? key});
@@ -18,6 +20,29 @@ class Acceuil extends StatefulWidget {
 
 class _AcceuilState extends State<Acceuil> {
   int initiallyDisplayedVehicles = 2;
+  bool notificationsSeen = false;
+   late SharedPreferences _prefs;
+
+    @override
+  void initState() {
+    super.initState();
+    _loadPreferences();
+  }
+
+  _loadPreferences() async {
+    _prefs = await SharedPreferences.getInstance();
+    setState(() {
+      // Charger la valeur de notificationSeen depuis les préférences
+      notificationsSeen = _prefs.getBool('notificationsSeen') ?? false;
+    });
+  }
+
+  _updatePreferences() async {
+    // Mettre à jour la valeur de notificationSeen dans les préférences
+    await _prefs.setBool('notificationsSeen', true);
+  }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -34,12 +59,76 @@ class _AcceuilState extends State<Acceuil> {
         ),
         centerTitle: true,
         actions: <Widget>[
-          IconButton(
-            icon: const Icon(
-              Icons.notification_add,
-              color: Colors.white,
-            ),
-            onPressed: () {},
+          StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection('vehicules')
+                .where('client_id',
+                    isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return IconButton(
+                  icon: Icon(
+                    Icons.notification_add,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {},
+                );
+              }
+
+              if (snapshot.hasError || snapshot.data == null) {
+                return IconButton(
+                  icon: Icon(
+                    Icons.notification_add,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {},
+                );
+              }
+
+              List<Map<String, dynamic>> vehiclesData =
+                  snapshot.data!.docs.map((DocumentSnapshot document) {
+                return document.data() as Map<String, dynamic>;
+              }).toList();
+
+              // Check if any vehicle has an 'Etat' that requires notification
+              bool showNotification = vehiclesData.any((vehicle) =>
+              vehicle['Etat'] == 'Validation' ||
+              vehicle['Etat'] == 'En attentes des pieces' ||
+              vehicle['Etat'] == 'Carrosserie et dressage' ||
+              vehicle['Etat'] == 'Validation' ||
+              vehicle['Etat'] == 'Achat' ||
+              vehicle['Etat'] == 'Preparation et peinture' ||
+              vehicle['Etat'] == 'Lustrage et finition' ||
+              vehicle['Etat'] == 'Reception' ||
+                  vehicle['Etat'] == 'Devis' ||
+                  vehicle['Etat'] == 'Terminer' ||
+                  vehicle['Etat'] == 'Lavage/Livraison');
+                  
+
+            return IconButton(
+  icon: Icon(
+    Icons.notification_add,
+    color: notificationsSeen ? Colors.white : Colors.red,
+  ),
+  onPressed: () {
+    _updatePreferences();
+    // Set notificationsSeen to true when the notification icon is pressed.
+    setState(() {
+      notificationsSeen = true;
+    });
+
+    // Navigate to the notification page
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NotificationPage(),
+      ),
+    );
+  },
+);
+
+            },
           ),
         ],
       ),
@@ -94,7 +183,7 @@ class _AcceuilState extends State<Acceuil> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(height: 7),
+                          SizedBox(height: 2),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
@@ -107,17 +196,17 @@ class _AcceuilState extends State<Acceuil> {
                             ),
                           ),
                           Padding(
-  padding: const EdgeInsets.all(8.0),
-  child: Text(
-    '     ${vehiclesData[i]['Etat']}',
-    style: TextStyle(
-      fontSize: 16.0,
-      fontWeight: FontWeight.bold,
-      color: _getColorForEtat(vehiclesData[i]['Etat']),
-    ),
-  ),
-),
-
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              '     Etat : ${vehiclesData[i]['Etat']}',
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                                color: _getColorForEtat(vehiclesData[i]['Etat']),
+                              ),
+                            ),
+                            
+                          ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Row(
@@ -254,7 +343,6 @@ class _AcceuilState extends State<Acceuil> {
       ),
     );
   }
-}
 
 Widget _buildCard(BuildContext context, String title, Color color) {
   return GestureDetector(
@@ -265,132 +353,152 @@ Widget _buildCard(BuildContext context, String title, Color color) {
       );
     },
     child: Card(
-      elevation: 3.0,
-      // Ajoute une ombre à la carte
-      color: Colors.white,
-
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(25.0),
-        side: BorderSide(
-          color: Color(0xFF7A99AC),
-          width: 2.0,
-        ),
-      ),
-      child: Padding(
-
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            
-            
-            Text(
-              title,
-              style: TextStyle(
-                  color: Color(0xFF7A99AC),
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold),
+      
+     
+    
+      child: Stack(
+        children: [
+          // Image d'arrière-plan
+          Container(
+            width: 150,
+            height: 80,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/cc.png'), // Remplacez 'assets/background_image.jpg' par le chemin de votre image
+                fit: BoxFit.cover,
+              ),
             ),
-          ],
-        ),
+          ),
+          // Contenu du card
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: Color(0xFF7A99AC),
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     ),
   );
 }
 
-Widget _buildCardd(BuildContext context, String title, Color color) {
-  return GestureDetector(
-    onTap: () {
-      // Navigation vers une autre page
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => AjoutPage(title)),
-      );
-    },
-    child: Card(
-      elevation: 3.0, // Ajoute une ombre à la carte
-      color: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(25.0),
-       side: BorderSide(
-          color: Color(0xFF7A99AC),
-          width: 2.0,
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                  color: Color(0xFF7A99AC),
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-      ),
-    ),
-  );
-}
 
-Widget _buildCarddd(BuildContext context, String title, Color color) {
-  return GestureDetector(
-    onTap: () {
-      // Navigation vers une autre page
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => remplPage(title)),
-      );
-    },
-    child: Card(
-      elevation: 3.0, // Ajoute une ombre à la carte
-      color: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(25.0),
-        side: BorderSide(
-          color: Color(0xFF7A99AC),
-          width: 2.0,
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                  color: Color(0xFF7A99AC),
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold),
+  Widget _buildCardd(BuildContext context, String title, Color color) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => AjoutPage(title)),
+        );
+      },
+       child: Card(
+      
+     
+    
+      child: Stack(
+        children: [
+          // Image d'arrière-plan
+          Container(
+            width: 150,
+            height: 80,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/cc.png'), // Remplacez 'assets/background_image.jpg' par le chemin de votre image
+                fit: BoxFit.cover,
+              ),
             ),
-          ],
-        ),
+          ),
+          // Contenu du card
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: Color(0xFF7A99AC),
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     ),
-  );
-}
-Color _getColorForEtat(String Etat) {
-  switch (Etat) {
-    case 'Reception':
-      return Colors.grey;
-    case 'Devis':
-      return Colors.yellow;
-    case 'Validation':
-      return Colors.orange;
-    case 'En attente des pieces':
-      return Colors.red;
-    case 'Montage':
-      return Colors.blue;
-    case 'Terminer':
-      return Colors.green;
-    default:
-      return Colors.black; // Couleur par défaut ou à ajuster selon votre choix.
+    );
+  }
+
+  Widget _buildCarddd(BuildContext context, String title, Color color) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => remplPage(title)),
+        );
+      },
+       child: Card(
+      
+     
+    
+      child: Stack(
+        children: [
+          // Image d'arrière-plan
+          Container(
+            width: 150,
+            height: 80,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/cc.png'), // Remplacez 'assets/background_image.jpg' par le chemin de votre image
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          // Contenu du card
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: Color(0xFF7A99AC),
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+    );
+  }
+
+  Color _getColorForEtat(String Etat) {
+    switch (Etat) {
+     
+      case 'Terminer':
+        return Colors.green;
+      default:
+        return Colors.black;
+    }
   }
 }
