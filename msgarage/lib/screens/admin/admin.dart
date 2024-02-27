@@ -133,6 +133,7 @@ Future<void> _handleSignOut() async {
                 ? StreamBuilder<QuerySnapshot>(
                     stream: _firestore
                         .collection('all_messages')
+                        
                         .orderBy('timestamp', descending: true)
                         .snapshots(),
                     builder: (context, snapshot) {

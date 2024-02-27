@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:msgarage/screens/details.dart';
+import 'package:msgarage/screens/navbar.chat.dart';
 import 'package:msgarage/screens/secondpage.dart';
 
 class ThirdPage extends StatefulWidget {
@@ -10,6 +11,7 @@ class ThirdPage extends StatefulWidget {
 
 class _ThirdPageState extends State<ThirdPage> {
   TextEditingController searchController = TextEditingController();
+  bool isSearchFocused = false;
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +29,9 @@ class _ThirdPageState extends State<ThirdPage> {
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.of(context)
-                .pushReplacement(MaterialPageRoute(builder: (_) => SecondPage()));
+         onPressed: () {
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (_) => StatPage()));
           },
         ),
       ),
@@ -37,36 +39,33 @@ class _ThirdPageState extends State<ThirdPage> {
         children: [
           // Search Bar Container
           Container(
-            padding: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(15.0),
-                bottomRight: Radius.circular(15.0),
-              ),
-            ),
-            child: Container(
-              width: 200,
-              padding: const EdgeInsets.symmetric(horizontal: 26.0),
-              decoration: BoxDecoration(
-                color: const Color(0xFF002E7F),
-                borderRadius: BorderRadius.circular(40.0),
-              ),
-              child: TextField(
-                controller: searchController,
-                decoration: InputDecoration(
-                  hintText: 'chercher un véhicule',
-                  hintStyle: TextStyle(color: Colors.white),
-                  border: InputBorder.none,
-                  filled: true,
-                  fillColor: const Color(0xFF002E7F),
+            padding: const EdgeInsets.all(15.0),
+            color: Colors.white,
+            child: TextField(
+              controller: searchController,
+              decoration: InputDecoration(
+                hintText: 'chercher un véhicule...',
+                hintStyle: TextStyle(color: Colors.white),
+                filled: true,
+                fillColor: const Color(0xFF002E7F),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(60.0),
+                  borderSide: BorderSide.none,
                 ),
-                onChanged: (value) {
-                  // Trigger the rebuild of the FutureBuilder with the new query
-                  setState(() {});
-                },
-                style: TextStyle(color: Colors.white),
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.search, color: Colors.white),
+                  onPressed: () {
+                    searchController.clear();
+
+                    setState(() {});
+                  },
+                ),
               ),
+              onChanged: (value) {
+                // Trigger the rebuild of the FutureBuilder with the new query
+                setState(() {});
+              },
+              style: TextStyle(color: Colors.white),
             ),
           ),
 
@@ -80,7 +79,8 @@ class _ThirdPageState extends State<ThirdPage> {
                 }
 
                 if (snapshot.hasError) {
-                  return Center(child: Text("Erreur de chargement des données"));
+                  return Center(
+                      child: Text("Erreur de chargement des données"));
                 }
 
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
@@ -91,7 +91,9 @@ class _ThirdPageState extends State<ThirdPage> {
                 var filteredData = snapshot.data!.docs.where((vehicule) {
                   // Assuming 'matricule' is the field you want to filter
                   String matricule = vehicule['matricule'] ?? '';
-                  return matricule.toLowerCase().contains(searchController.text.toLowerCase());
+                  return matricule
+                      .toLowerCase()
+                      .contains(searchController.text.toLowerCase());
                 }).toList();
 
                 return ListView.builder(
@@ -121,17 +123,19 @@ class _ThirdPageState extends State<ThirdPage> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              buildRichText(
-                                  "Véhicule   ", vehicule['matricule'], FontWeight.bold),
+                              buildRichText("Véhicule   ",
+                                  vehicule['matricule'], FontWeight.bold),
                               buildRichText("Date          ", vehicule['date']),
                               SizedBox(
                                 height: 20,
                               ),
-                              buildRichText("Client        ", vehicule['client']),
+                              buildRichText(
+                                  "Client        ", vehicule['client']),
                             ],
                           ),
                           IconButton(
-                            icon: Icon(Icons.visibility, color: Color(0xFF002E7F)),
+                            icon: Icon(Icons.visibility,
+                                color: Color(0xFF002E7F)),
                             onPressed: () {
                               Navigator.push(
                                 context,
@@ -155,8 +159,8 @@ class _ThirdPageState extends State<ThirdPage> {
     );
   }
 
-  RichText buildRichText(
-      String label, String value, [FontWeight fontWeight = FontWeight.bold]) {
+  RichText buildRichText(String label, String value,
+      [FontWeight fontWeight = FontWeight.bold]) {
     return RichText(
       text: TextSpan(
         style: DefaultTextStyle.of(context).style,
@@ -164,7 +168,9 @@ class _ThirdPageState extends State<ThirdPage> {
           TextSpan(
             text: '$label: ',
             style: TextStyle(
-                fontSize: 16.0, fontWeight: fontWeight, color: Color(0xFF002E7F)),
+                fontSize: 16.0,
+                fontWeight: fontWeight,
+                color: Color(0xFF002E7F)),
           ),
           TextSpan(
             text: value,

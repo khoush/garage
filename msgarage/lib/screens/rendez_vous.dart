@@ -202,10 +202,11 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
   @override
   Widget build(BuildContext context) {
     return Container(
+
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage("assets/images/conn.jpg"), // Replace with your image path
-          fit: BoxFit.cover,
+          
         ),
       ),
       child: Padding(

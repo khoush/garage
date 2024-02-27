@@ -121,11 +121,12 @@ class _MyFormState extends State<MyForm> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: double.infinity,
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage(
               "assets/images/conn.jpg"), // Replace with your image path
-          fit: BoxFit.cover,
+          
         ),
       ),
       child: Padding(

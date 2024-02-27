@@ -157,10 +157,11 @@ final TextEditingController _raisonController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: double.infinity,
     decoration: BoxDecoration(
   image: DecorationImage(
     image: AssetImage("assets/images/conn.jpg"),
-    fit: BoxFit.cover, // Utilisez BoxFit.cover pour couvrir l'écran sans déformation
+     // Utilisez BoxFit.cover pour couvrir l'écran sans déformation
   ),
 ),
       child: Padding(

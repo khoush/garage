@@ -46,7 +46,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/images/insc.jpg'),
-            fit: BoxFit.cover,
+           
           ),
         ),
         child: Container(

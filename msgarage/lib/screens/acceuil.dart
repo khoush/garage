@@ -10,6 +10,8 @@ import 'package:msgarage/screens/notifpage.dart';
 import 'package:msgarage/screens/remppage.dart';
 import 'package:msgarage/screens/rendez_vous.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 
 class Acceuil extends StatefulWidget {
   const Acceuil({Key? key});
@@ -21,9 +23,12 @@ class Acceuil extends StatefulWidget {
 class _AcceuilState extends State<Acceuil> {
   int initiallyDisplayedVehicles = 2;
   bool notificationsSeen = false;
-   late SharedPreferences _prefs;
+  late SharedPreferences _prefs;
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
-    @override
+
+  @override
   void initState() {
     super.initState();
     _loadPreferences();
@@ -41,8 +46,6 @@ class _AcceuilState extends State<Acceuil> {
     // Mettre à jour la valeur de notificationSeen dans les préférences
     await _prefs.setBool('notificationsSeen', true);
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -93,41 +96,39 @@ class _AcceuilState extends State<Acceuil> {
 
               // Check if any vehicle has an 'Etat' that requires notification
               bool showNotification = vehiclesData.any((vehicle) =>
-              vehicle['Etat'] == 'Validation' ||
-              vehicle['Etat'] == 'En attentes des pieces' ||
-              vehicle['Etat'] == 'Carrosserie et dressage' ||
-              vehicle['Etat'] == 'Validation' ||
-              vehicle['Etat'] == 'Achat' ||
-              vehicle['Etat'] == 'Preparation et peinture' ||
-              vehicle['Etat'] == 'Lustrage et finition' ||
-              vehicle['Etat'] == 'Reception' ||
+                  vehicle['Etat'] == 'Validation' ||
+                  vehicle['Etat'] == 'En attentes des pieces' ||
+                  vehicle['Etat'] == 'Carrosserie et dressage' ||
+                  vehicle['Etat'] == 'Validation' ||
+                  vehicle['Etat'] == 'Achat' ||
+                  vehicle['Etat'] == 'Preparation et peinture' ||
+                  vehicle['Etat'] == 'Lustrage et finition' ||
+                  vehicle['Etat'] == 'Reception' ||
                   vehicle['Etat'] == 'Devis' ||
                   vehicle['Etat'] == 'Terminer' ||
                   vehicle['Etat'] == 'Lavage/Livraison');
-                  
 
-            return IconButton(
-  icon: Icon(
-    Icons.notification_add,
-    color: notificationsSeen ? Colors.white : Colors.red,
-  ),
-  onPressed: () {
-    _updatePreferences();
-    // Set notificationsSeen to true when the notification icon is pressed.
-    setState(() {
-      notificationsSeen = true;
-    });
+              return IconButton(
+                icon: Icon(
+                  Icons.notification_add,
+                  color: notificationsSeen ? Colors.white : Colors.red,
+                ),
+                onPressed: () {
+                  _updatePreferences();
+                  // Set notificationsSeen to true when the notification icon is pressed.
+                  setState(() {
+                    notificationsSeen = true;
+                  });
 
-    // Navigate to the notification page
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => NotificationPage(),
-      ),
-    );
-  },
-);
-
+                  // Navigate to the notification page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => NotificationPage(),
+                    ),
+                  );
+                },
+              );
             },
           ),
         ],
@@ -202,10 +203,10 @@ class _AcceuilState extends State<Acceuil> {
                               style: TextStyle(
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.bold,
-                                color: _getColorForEtat(vehiclesData[i]['Etat']),
+                                color:
+                                    _getColorForEtat(vehiclesData[i]['Etat']),
                               ),
                             ),
-                            
                           ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -262,11 +263,11 @@ class _AcceuilState extends State<Acceuil> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        _buildCard(context, "   Ajouter \n un véhicule     ",
+                        _buildCard(context, "     Ajouter \n un véhicule     ",
                             Colors.white),
                         _buildCardd(
                             context,
-                            "    Tarifs    \n  et devis          ",
+                            "       Tarifs    \n     et devis          ",
                             Colors.white),
                       ],
                     ),
@@ -344,55 +345,42 @@ class _AcceuilState extends State<Acceuil> {
     );
   }
 
-Widget _buildCard(BuildContext context, String title, Color color) {
-  return GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => AnotherPage(title)),
-      );
-    },
-    child: Card(
-      
-     
-    
-      child: Stack(
-        children: [
-          // Image d'arrière-plan
-          Container(
-            width: 150,
-            height: 80,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/cc.png'), // Remplacez 'assets/background_image.jpg' par le chemin de votre image
-                fit: BoxFit.cover,
+  Widget _buildCard(BuildContext context, String title, Color color) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => AnotherPage(title)),
+        );
+      },
+      child: Card(
+        color: Colors.white,
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Text(
+                      title,
+                      style: TextStyle(
+                        color: Color(0xFF7A99AC),
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-          // Contenu du card
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: Color(0xFF7A99AC),
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 
   Widget _buildCardd(BuildContext context, String title, Color color) {
     return GestureDetector(
@@ -402,44 +390,32 @@ Widget _buildCard(BuildContext context, String title, Color color) {
           MaterialPageRoute(builder: (context) => AjoutPage(title)),
         );
       },
-       child: Card(
-      
-     
-    
-      child: Stack(
-        children: [
-          // Image d'arrière-plan
-          Container(
-            width: 150,
-            height: 80,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/cc.png'), // Remplacez 'assets/background_image.jpg' par le chemin de votre image
-                fit: BoxFit.cover,
+      child: Card(
+        color: Colors.white,
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Text(
+                      title,
+                      style: TextStyle(
+                        color: Color(0xFF7A99AC),
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-          // Contenu du card
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: Color(0xFF7A99AC),
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
     );
   }
 
@@ -451,50 +427,37 @@ Widget _buildCard(BuildContext context, String title, Color color) {
           MaterialPageRoute(builder: (context) => remplPage(title)),
         );
       },
-       child: Card(
-      
-     
-    
-      child: Stack(
-        children: [
-          // Image d'arrière-plan
-          Container(
-            width: 150,
-            height: 80,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/cc.png'), // Remplacez 'assets/background_image.jpg' par le chemin de votre image
-                fit: BoxFit.cover,
+      child: Card(
+        color: Colors.white,
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Text(
+                      title,
+                      style: TextStyle(
+                        color: Color(0xFF7A99AC),
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-          // Contenu du card
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: Color(0xFF7A99AC),
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
     );
   }
 
   Color _getColorForEtat(String Etat) {
     switch (Etat) {
-     
       case 'Terminer':
         return Colors.green;
       default:

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:msgarage/screens/client.dart';
+import 'package:msgarage/screens/navbar.chat.dart';
 import 'package:msgarage/screens/rendez_vous.dart';
 import 'package:msgarage/screens/test.dart';
 
@@ -83,9 +84,9 @@ class _FourthPageState extends State<FourthPage> {
             Icons.arrow_back,
             color: Colors.white,
           ),
-          onPressed: () {
+        onPressed: () {
             Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) => ThirdPage()));
+                MaterialPageRoute(builder: (_) => StatPage()));
           },
         ),
       ),
@@ -224,22 +225,18 @@ class _FourthPageState extends State<FourthPage> {
     return Row(
       children: [
         Container(
-          height: 110.0, // Set the desired height for the bar
+          height: 115.0, // Set the desired height for the bar
           width: 7.0, // Set the desired width for the bar
           color: Color(0xFF002E7F), // Set the color of the bar
         ),
         Expanded(
           child: Card(
+            color: Colors.white,
             elevation: 2, 
             child: Container(
               height: 120.0,
               width: 55,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(imagePath),
-                  fit: BoxFit.cover,
-                ),
-              ),
+             
               child: ListTile(
                 title:  Row(
               mainAxisAlignment: MainAxisAlignment.start,

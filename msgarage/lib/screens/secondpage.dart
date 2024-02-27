@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:msgarage/screens/acceuil.dart';
 import 'package:msgarage/screens/client.dart';
+import 'package:msgarage/screens/navbar.chat.dart';
 import 'package:msgarage/screens/rendez_vous.dart';
 
 class SecondPage extends StatefulWidget {
@@ -14,11 +14,9 @@ class SecondPage extends StatefulWidget {
 class _SecondPageState extends State<SecondPage> {
   List<String> mat = [];
   String selectedMat = ''; // Initialisez avec une valeur par défaut
-  double sliderValue1 = 0.0;
-  double sliderValue2 = 0.0;
-  double sliderValue3 = 0.0;
-  double sliderValue4 = 0.0;
+  double progressValue = 0.0; // Single progress tracker
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  late QuerySnapshot<Map<String, dynamic>> snapshot;
 
   @override
   void initState() {
@@ -26,7 +24,6 @@ class _SecondPageState extends State<SecondPage> {
     _fetchImmatriculations();
   }
 
-  late QuerySnapshot<Map<String, dynamic>> snapshot;
   Future<void> _fetchImmatriculations() async {
     try {
       // Récupérer la collection 'véhicules' depuis Firestore
@@ -39,40 +36,20 @@ class _SecondPageState extends State<SecondPage> {
 
         // Ajouter l'immatriculation à la liste
         setState(() {
-          mat.add(immatriculation);
+          if (!mat.contains(immatriculation)) {
+            // Add only if not already present to avoid duplicates
+            mat.add(immatriculation);
+          }
+
           if (mat.isNotEmpty) {
             // Si la liste n'est pas vide, initialiser selectedMat avec la première valeur
             selectedMat = mat.first;
           }
         });
+
         if (doc.get('matricule') == selectedMat) {
-          // Mettre à jour les sliders en fonction de l'état
-          if (doc.get('Etat') == 'Reception') {
-            sliderValue1 = 0.0;
-          } else if (doc.get('Etat') == 'Devis') {
-            sliderValue1 = 50.0;
-          } else if (doc.get('Etat') == 'Validation') {
-            sliderValue1 = 100.0;
-          }
-          if (doc.get('Etat') == 'Achat') {
-            sliderValue2 = 0.0;
-          } else if (doc.get('Etat') == 'En attente des pieces') {
-            sliderValue2 = 50.0;
-          } else if (doc.get('Etat') == 'Carrosserie et dressage') {
-            sliderValue2 = 100.0;
-          }
-          if (doc.get('Etat') == 'Preparation et peinture') {
-            sliderValue3 = 0.0;
-          } else if (doc.get('Etat') == 'Montage') {
-            sliderValue3 = 50.0;
-          } else if (doc.get('Etat') == 'Lustrage et finition') {
-            sliderValue3 = 100.0;
-          }
-          if (doc.get('Etat') == 'Lavage/Livraison') {
-            sliderValue4 = 0.0;
-          } else if (doc.get('Etat') == 'Terminer') {
-            sliderValue4 = 100.0;
-          }
+          // Mettre à jour le progress tracker en fonction de l'état
+          _updateProgressValue(doc.get('Etat'));
         }
       });
     } catch (e) {
@@ -80,49 +57,49 @@ class _SecondPageState extends State<SecondPage> {
     }
   }
 
-  //lazemha to5rej mn function athika 5ater athi enty ta3mlilha fi initianlistion donc howa resultat yod5el beha w ma3awdetch refraich tab9a hiya naffsha!!
-
-  void test() {
-    sliderValue1 = 0.0;
-    sliderValue2 = 0.0;
-    sliderValue3 = 0.0;
-    sliderValue4 = 0.0;
-
-    snapshot.docs.forEach((DocumentSnapshot<Map<String, dynamic>> doc) {
-      if (doc.get('matricule') == selectedMat) {
-        // Mettreon mtea slider baad test tarjaa le 0 ?eyy bch tab9a ken resultat jdida behy fhemtek yatyk saha ena makhamtesh feha ama najmou mithel naamlouha par exemple moush yarj3ou lel 0 aka l point lekbira heki tetnaha completement w ela tarjaa le 0 khyr ?lmochkla howa slider manetssawerch thama faza bch tna7i beha athika!! aahfhemtek
-        if (doc.get('Etat') == 'Reception') {
-          sliderValue1 = 0.0;
-        } else if (doc.get('Etat') == 'Devis') {
-          sliderValue1 = 50.0;
-        } else if (doc.get('Etat') == 'Validation') {
-          sliderValue1 = 100.0;
-        }
-        if (doc.get('Etat') == 'Achat') {
-          sliderValue2 = 0.0;
-        } else if (doc.get('Etat') == 'En attente des pieces') {
-          sliderValue2 = 50.0;
-        } else if (doc.get('Etat') == 'Carrosserie et dressage') {
-          sliderValue2 = 100.0;
-        }
-        if (doc.get('Etat') == 'Preparation et peinture') {
-          sliderValue3 = 0.0;
-        } else if (doc.get('Etat') == 'Montage') {
-          sliderValue3 = 50.0;
-        } else if (doc.get('Etat') == 'Lustrage et finition') {
-          sliderValue3 = 100.0;
-        }
-        if (doc.get('Etat') == 'Lavage/Livraison') {
-          sliderValue4 = 0.0;
-        } else if (doc.get('Etat') == 'Terminer') {
-          sliderValue4 = 100.0;
-        }
-      }
-    });
-  } 
+  void _updateProgressValue(String etat) {
+    switch (etat) {
+      case 'Reception':
+        progressValue = 0.0;
+        break;
+      case 'Devis':
+        progressValue = 10.0;
+        break;
+      case 'Validation':
+        progressValue = 20.0;
+        break;
+      case 'Achat':
+        progressValue = 30.0;
+        break;
+      case 'En attente des pieces':
+        progressValue = 40.0;
+        break;
+      case 'Carrosserie et dressage':
+        progressValue = 50.0;
+        break;
+      case 'Préparation et peinture':
+        progressValue = 60.0;
+        break;
+      case 'Montage':
+        progressValue = 70.0;
+        break;
+      case 'Lustrage et finition':
+        progressValue = 80.0;
+        break;
+      case 'Lavage/livraison':
+        progressValue = 90.0;
+        break;
+      case 'Terminer':
+        progressValue = 100.0;
+        break;
+      default:
+        progressValue = 0.0;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    var TextWritingMode;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF002E7F),
@@ -135,11 +112,12 @@ class _SecondPageState extends State<SecondPage> {
           ),
         ),
         centerTitle: true,
-      leading: IconButton(
-          icon: Icon(Icons.arrow_back,
-          color: Colors.white,),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => Acceuil()));
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (_) => StatPage()),
+            );
           },
         ),
       ),
@@ -148,16 +126,14 @@ class _SecondPageState extends State<SecondPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            // Dropdown Field
             DropdownButtonFormField<String>(
               value: selectedMat,
               onChanged: (String? newValue) {
                 setState(() {
                   selectedMat = newValue!;
-                  print(selectedMat); 
-                  
+                  // Update progressValue based on the selectedMat
+                  _updateProgressValueForSelectedMat();
                 });
-                test();
               },
               items: mat.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
@@ -191,161 +167,138 @@ class _SecondPageState extends State<SecondPage> {
                 ),
               ],
             ),
-
-            const SizedBox(height: 40.0),
-
-            // Slider 1
-            Column(
-              children: [
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Reception',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 12)),
-                    Text('Devis',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 12)),
-                    Text('Validation',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 12)),
-                  ],
-                ),
-                Slider(
-                  value: sliderValue1,
-                  onChanged: (value) {
-                    setState(() {
-                      sliderValue1 = value;
-                    });
-                  },
-                  min: 0.0,
-                  max: 100.0,
-                  divisions: 100,
-                  label: '$sliderValue1',
-                  activeColor: _getSliderColor(sliderValue1),
-                 
-                  inactiveColor: Colors.grey,
-                  onChangeEnd: (double value) {
-                    
-                  },
-                ),
-              ],
-            ),
             const SizedBox(height: 20.0),
+           Container(
+  height: MediaQuery.of(context).size.height - 400,
+  child: Row(
+    children: [
+      // Slider
+      RotatedBox(
+        quarterTurns: 3,
+        child: Slider(
+          value: progressValue,
+          onChanged: null,
+          min: 0.0,
+          max: 100.0,
+          divisions: 100,
+          label: '$progressValue',
+          activeColor: Colors.green,
+          inactiveColor: Colors.grey,
+        ),
+      ),
+      
+      // Spacer between Slider and Vertical Text
+      
 
-            // Slider 2
-            Column(
-              children: [
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Achat',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 12)),
-                    Text('En attente \n des pieces ',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 12)),
-                    Text('Carrosserie\n et dressage',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 12)),
-                  ],
-                ),
-                Slider(
-                  value: sliderValue2,
-                  onChanged: (value) {
-                    setState(() {
-                      sliderValue2 = value;
-                    });
-                  },
-                  min: 0.0,
-                  max: 100.0,
-                  divisions: 100,
-                  label: '$sliderValue2',
-                 activeColor: _getSliderColor(sliderValue2),
-                  inactiveColor: Colors.grey,
-                ),
-              ],
+      // Vertical Text
+      Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            '-------- Terminer',
+            style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.normal,
+              
             ),
-            const SizedBox(height: 20.0),
+          ),
+          SizedBox(height: 9,),
+          Text(
+            '-------- Lavage et livraison',
+            style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.normal,
+            
+            ),
+          ),
+          SizedBox(height: 9,),
+          Text(
+            '-------- Lustrage et finition',
+            style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.normal,
+            
+            ),
+          ),
+          SizedBox(height: 10,),
+           Text(
+            '-------- Montage',
+            style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.normal,
+            
+            ),
+          ),
+          SizedBox(height: 9,),
+           Text(
+            '-------- Preparation et peinture',
+            style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.normal,
+            
+            ),
+          ),
+          SizedBox(height: 9,),
+           Text(
+            '-------- Carrosserie et dressage',
+            style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.normal,
+            
+            ),
+          ),
+          SizedBox(height: 9,),
+           Text(
+            '-------- En attente des pieces',
+            style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.normal,
+            
+            ),
+          ),
+          SizedBox(height: 9,),
+           Text(
+            '-------- Achat',
+            style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.normal,
+            
+            ),
+          ),
+          SizedBox(height: 9,),
+           Text(
+            '-------- Validation',
+            style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.normal,
+            
+            ),
+          ),
+          SizedBox(height: 9,),
+           Text(
+            '-------- Devis',
+            style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.normal,
+            
+            ),
+          ),
+          SizedBox(height: 9,),
+           Text(
+            '-------- Reception',
+            style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.normal,
+            
+            ),
+          ),
+        ],
+      ),
+    ],
+  ),
+),
 
-            // Slider 3
-            Column(
-              children: [
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Preparation \n et peinture',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 12)),
-                    Text('Montage',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 12)),
-                    Text('Lustrage \net finition',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 12)),
-                  ],
-                ),
-                Slider(
-                  value: sliderValue3,
-                  onChanged: (value) {
-                    setState(() {
-                      sliderValue3 = value;
-                    });
-                  },
-                  min: 0.0,
-                  max: 100.0,
-                  divisions: 100,
-                  label: '$sliderValue3',
-                  activeColor: _getSliderColor(sliderValue3),
-                  inactiveColor: Colors.grey,
-                ),
-              ],
-            ),
-            const SizedBox(height: 20.0),
-
-            Column(
-              children: [
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Lavage/Livraison',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 12)),
-                    Text(''),
-                    Text('Terminer', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12 , color: Colors.white))
-                  ],
-                ),
-                Stack(
-                  children: [
-                    Slider(
-                      value: sliderValue4,
-                      onChanged: (value) {
-                        setState(() {
-                          sliderValue4 = value;
-                        });
-                      },
-                      min: 0.0,
-                      max: 100.0,
-                      divisions: 100,
-                      label: '$sliderValue4',
-                     activeColor: _getSliderColor(sliderValue4),
-                      inactiveColor: Colors.grey,
-                    ),
-                    if (sliderValue4 == 100.0)
-                      const Positioned(
-                        right: 8.0, // Adjust the position as needed
-                        top: -5.0, // Adjust the position as needed
-                        child: Icon(
-                          Icons.directions_car,
-                          color: Color(0xFF002E7F),
-                          size: 30.0,
-                        ),
-                      ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -405,13 +358,23 @@ class _SecondPageState extends State<SecondPage> {
       ),
     );
   }
-}
-Color _getSliderColor(double value) {
-  if (value == 0.0) {
-    return Colors.grey; // Set initial color when the value is 0
-  } else if (value == 100.0) {
-    return Colors.green; // Set color when the value is 100
-  } else {
-    return Colors.blue; // Set color for other values as needed
+
+  void _updateProgressValueForSelectedMat() {
+    for (DocumentSnapshot<Map<String, dynamic>> doc in snapshot.docs) {
+      if (doc.get('matricule') == selectedMat) {
+        _updateProgressValue(doc.get('Etat'));
+        break;
+      }
+    }
+  }
+
+  Color _getSliderColor(double value) {
+    if (value == 0.0) {
+      return Colors.green; // Set initial color when the value is 0
+    } else if (value == 100.0) {
+      return Colors.green; // Set color when the value is 100
+    } else {
+      return Colors.green; // Set color for other values as needed
+    }
   }
 }

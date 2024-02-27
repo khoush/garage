@@ -94,12 +94,11 @@ String userRole = (userSnapshot.data() as Map<String, dynamic>)['role'] ?? 'user
         backgroundColor: Colors.white,
       ),
       body: Container(
-        width: double.infinity,
-        height: double.infinity,
+        
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/images/conn.jpg'),
-            fit: BoxFit.cover,
+           
           ),
         ),
         child: Container(
