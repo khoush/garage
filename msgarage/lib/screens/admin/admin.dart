@@ -97,7 +97,7 @@ Future<void> _handleSignOut() async {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF002E7F),
+        backgroundColor: Colors.black,
         title: const Text(
           'Admin Chat',
           style: TextStyle(
@@ -173,7 +173,7 @@ Future<void> _handleSignOut() async {
                 IconButton(
                   icon: const Icon(
                     Icons.camera,
-                    color: Color(0xFF002E7F),
+                    color: Colors.red,
                   ),
                   onPressed: () => _pickImage(ImageSource.camera),
                 ),
@@ -188,7 +188,7 @@ Future<void> _handleSignOut() async {
                 IconButton(
                   icon: const Icon(
                     Icons.send,
-                    color: Color(0xFF002E7F),
+                    color: Colors.red,
                   ),
                   onPressed: () {
                     if (_selectedUser.isNotEmpty) {
