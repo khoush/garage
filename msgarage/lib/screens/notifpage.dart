@@ -70,17 +70,6 @@ class _NotificationPageState extends State<NotificationPage> {
 
               DateTime date = DateFormat('dd/MM/yyyy').parse(dateString);
 
-              // Vérifier que la date est valide
-              if (date == null) {
-                // Gérer le cas où la conversion de la chaîne en DateTime échoue
-                return Card(
-                  elevation: 1,
-                  child: ListTile(
-                    title: Text("Date invalide pour ce véhicule"),
-                  ),
-                );
-              }
-
               int joursDifference = DateTime.now().difference(date).inDays;
 
               return Card(

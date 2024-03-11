@@ -99,7 +99,6 @@ class _SecondPageState extends State<SecondPage> {
 
   @override
   Widget build(BuildContext context) {
-    var TextWritingMode;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,

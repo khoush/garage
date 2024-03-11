@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:msgarage/screens/details.dart';
 import 'package:msgarage/screens/navbar.chat.dart';
-import 'package:msgarage/screens/secondpage.dart';
 
 class ThirdPage extends StatefulWidget {
   @override

@@ -68,7 +68,6 @@ class _MyFormState extends State<MyForm> {
     String Kilometrage = _kilomController.text;
 
     try {
-      var currentUser;
       var accident;
       var vidange;
       var controle;
