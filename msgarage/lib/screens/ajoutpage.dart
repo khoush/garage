@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:msgarage/screens/navbar.chat.dart';
 
 class AnotherPage extends StatefulWidget {
-  const AnotherPage(String title, {super.key});
+
 
   @override
   State<AnotherPage> createState() => _AnotherPageState();
@@ -15,9 +15,9 @@ class _AnotherPageState extends State<AnotherPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF002E7F),
+        backgroundColor: Colors.black,
         title: Image.asset(
-          'assets/images/igm.png', // Assurez-vous que le chemin est correct
+          'assets/images/ka.png', // Assurez-vous que le chemin est correct
           width: 70.0,
           height: 70.0,
         ),
@@ -138,7 +138,7 @@ class _MyFormState extends State<MyForm> {
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage(
-              "assets/images/arrr.jpeg"), // Replace with your image path
+              "assets/images/aj.jpg"), // Replace with your image path
           fit: BoxFit.cover,
         ),
       ),
@@ -155,7 +155,7 @@ class _MyFormState extends State<MyForm> {
                     child: Text(
                       'Ajouter votre Citroën',
                       style: TextStyle(
-                        color: Color(0xFF7A99AC),
+                        color: Colors.red,
                         fontSize: 17.0,
                         fontWeight: FontWeight.bold,
                       ),
@@ -534,7 +534,7 @@ class _MyFormState extends State<MyForm> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      primary: Color(0xFF002E7F),
+                      backgroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25),
                       ),

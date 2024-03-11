@@ -17,7 +17,7 @@ class _ThirdPageState extends State<ThirdPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF002E7F),
+        backgroundColor: Colors.black,
         title: Text(
           'Ordre de reception',
           style: TextStyle(
@@ -47,7 +47,7 @@ class _ThirdPageState extends State<ThirdPage> {
                 hintText: 'chercher un véhicule...',
                 hintStyle: TextStyle(color: Colors.white),
                 filled: true,
-                fillColor: const Color(0xFF002E7F),
+                fillColor: Colors.black,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(60.0),
                   borderSide: BorderSide.none,
@@ -135,7 +135,7 @@ class _ThirdPageState extends State<ThirdPage> {
                           ),
                           IconButton(
                             icon: Icon(Icons.visibility,
-                                color: Color(0xFF002E7F)),
+                                color: Colors.red),
                             onPressed: () {
                               Navigator.push(
                                 context,
@@ -170,7 +170,7 @@ class _ThirdPageState extends State<ThirdPage> {
             style: TextStyle(
                 fontSize: 16.0,
                 fontWeight: fontWeight,
-                color: Color(0xFF002E7F)),
+                color: Colors.black),
           ),
           TextSpan(
             text: value,

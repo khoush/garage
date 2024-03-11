@@ -91,7 +91,7 @@ class ClientChatScreenState extends State<ClientChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF002E7F),
+        backgroundColor:  Colors.black,
         title: const Text(
           'Client Chat',
           style: TextStyle(
@@ -169,7 +169,7 @@ class ClientChatScreenState extends State<ClientChatScreen> {
                 IconButton(
                   icon: const Icon(
                     Icons.camera,
-                    color: Color(0xFF002E7F),
+                    color: Colors.red,
                   ),
                   onPressed: () => _pickImage(ImageSource.camera),
                 ),
@@ -184,7 +184,7 @@ class ClientChatScreenState extends State<ClientChatScreen> {
                 IconButton(
                   icon: const Icon(
                     Icons.send,
-                    color: Color(0xFF002E7F),
+                    color: Colors.red,
                   ),
                   onPressed: () {
                     if (_selectedUser.isNotEmpty) {

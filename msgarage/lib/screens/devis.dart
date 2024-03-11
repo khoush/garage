@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:msgarage/screens/navbar.chat.dart';
 
 class AjoutPage extends StatefulWidget {
-  const AjoutPage(String title, {super.key});
+  
 
   @override
   State<AjoutPage> createState() => _AjoutPageState();
@@ -13,10 +13,10 @@ class _AjoutPageState extends State<AjoutPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(appBar: AppBar(
-        backgroundColor: Color(0xFF002E7F),
+        backgroundColor: Colors.black,
         title: 
           Image.asset(
-            'assets/images/igm.png', // Assurez-vous que le chemin est correct
+            'assets/images/ka.png', // Assurez-vous que le chemin est correct
             width: 70.0,
             height: 70.0,
           ),
@@ -121,14 +121,7 @@ class _MyFormState extends State<MyForm> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: double.infinity,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(
-              "assets/images/conn.jpg"), // Replace with your image path
-          
-        ),
-      ),
+      
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: SingleChildScrollView(
@@ -140,7 +133,7 @@ class _MyFormState extends State<MyForm> {
                   child: Text(
                     'Demande de Devis',
                     style: TextStyle(
-                      color: Color(0xFF7A99AC),
+                      color: Colors.red,
                       fontSize: 17.0,
                       fontWeight: FontWeight.bold,
                     ),
@@ -546,7 +539,7 @@ class _MyFormState extends State<MyForm> {
                     // Additional logic or navigation if needed
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Color(0xFF002E7F),
+                    backgroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                     ),

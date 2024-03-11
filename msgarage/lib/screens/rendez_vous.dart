@@ -15,7 +15,7 @@ class Rendezvous extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF002E7F),
+        backgroundColor: Colors.black,
         title: Text(
           'Prise des rendez-vous',
           style: TextStyle(
@@ -203,12 +203,7 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
   Widget build(BuildContext context) {
     return Container(
 
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage("assets/images/conn.jpg"), // Replace with your image path
-          
-        ),
-      ),
+      
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -216,15 +211,15 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
             children: [
            
                Container(
-                width: 110,
-                height: 110, // Adjust the height as needed
+                width: 90,
+                height: 70, // Adjust the height as needed
                 child: Image.asset(
-                  "assets/images/imgg.png", // Replace with your image path
-                  fit: BoxFit.cover,
+                  "assets/images/kia.png", // Replace with your image path
+                
                 ),
-              ),  
+              ), 
                  
-              SizedBox(height: 20),
+              SizedBox(height: 1),
               Container(
                 width: 350,
                 height: 50,
@@ -263,7 +258,7 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
                     ),
                     suffixIcon: Icon(
                       Icons.person,
-                      color: Color(0xFF002E7F),
+                      color: Colors.red,
                     ),
                   ),
                 ),
@@ -375,7 +370,7 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
         },
         child: Icon(
           Icons.calendar_today,
-          color: Color(0xFF002E7F),
+          color: Colors.red,
         ),
       ),
     ),
@@ -424,7 +419,7 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
                     ),
                     suffixIcon: Icon(
                       Icons.lock_clock,
-                      color: Color(0xFF002E7F),
+                      color: Colors.red,
                     ),
                   ),
                 ),
@@ -561,7 +556,7 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
                       child: ElevatedButton(
                         onPressed: _pickFile,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF7A99AC),
+                          backgroundColor: Colors.black,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(13),
                           ),
@@ -587,7 +582,7 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF7A99AC),
+                          backgroundColor: Colors.black,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(13),
                           ),
@@ -613,8 +608,8 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
           ),
         ),
               const SizedBox(
-                height: 100,
-                width: 30,
+                height: 10,
+                width: 20,
               ),
               Align(
                 alignment: Alignment.bottomRight,
@@ -631,7 +626,7 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(30),
-                      color: Color(0xFF002E7F),
+                      color: Colors.black,
                     ),
                     child: const Icon(
                       Icons.chat,

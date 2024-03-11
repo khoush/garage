@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:msgarage/screens/client.dart';
 import 'package:msgarage/screens/navbar.chat.dart';
 import 'package:msgarage/screens/rendez_vous.dart';
-import 'package:msgarage/screens/test.dart';
 
 class FourthPage extends StatefulWidget {
   const FourthPage({super.key});
@@ -69,7 +68,7 @@ class _FourthPageState extends State<FourthPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF002E7F),
+        backgroundColor: Colors.black,
         title: Text(
           'Historiques',
           style: TextStyle(
@@ -155,67 +154,63 @@ class _FourthPageState extends State<FourthPage> {
                   }
                 },
               ),
-              SizedBox(
-                height: 322,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute<void>(
-                          builder: (BuildContext context) => Rendezvous(),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 22, horizontal: 30),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: Color(0xFF002E7F),
-                      ),
-                      child: const Text(
-                        'Prendre un rendez-vous',
-                        style: TextStyle(
-                          inherit: false,
-                          fontSize: 17,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 20),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute<void>(
-                          builder: (BuildContext context) => ClientChatPage(),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: Color(0xFF002E7F),
-                      ),
-                      child: const Icon(
-                        Icons.chat,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              
+             
             ],
           ),
         ),
       ),
+
+
+
+
+       floatingActionButton: Row(
+        children: [
+          Container(
+            
+            width: 250, // Set your desired width here
+            height: 50,
+            child: FloatingActionButton(
+              
+              onPressed: () {
+                Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => Rendezvous()),
+                      );
+              },
+              mini: true,
+              child: Text(
+                "Prendre un rendez-vous",
+                style: TextStyle(color: Colors.white),
+              ),
+              
+              backgroundColor: Colors.red,
+            ),
+          ),
+          SizedBox(width: 20,),
+           Container(
+            width: 60, // Set your desired width here
+            height: 50,
+            child: FloatingActionButton(
+              onPressed: () {
+               Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => ClientChatPage()),
+                      );
+              },
+              mini: true,
+              child:  const Icon(
+                        Icons.chat,
+                        color: Colors.white,
+                      ),
+              backgroundColor: Colors.black,
+            ),
+          ),
+        ],
+      ),
+      
+      
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniStartFloat,
     );
   }
 
@@ -227,7 +222,7 @@ class _FourthPageState extends State<FourthPage> {
         Container(
           height: 115.0, // Set the desired height for the bar
           width: 7.0, // Set the desired width for the bar
-          color: Color(0xFF002E7F), // Set the color of the bar
+          color: Colors.black, // Set the color of the bar
         ),
         Expanded(
           child: Card(
@@ -245,7 +240,7 @@ class _FourthPageState extends State<FourthPage> {
                   padding: const EdgeInsets.all(5.0),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
-                    color: const Color(0xFF002E7F),
+                    color: Colors.black,
                   ),
                   child: Text(
                     '$selectedMat',

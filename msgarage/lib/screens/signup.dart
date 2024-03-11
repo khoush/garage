@@ -20,8 +20,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<void> addUserToFirestore(
-      String userId, String email, String nom, String username , String role) async {
+  Future<void> addUserToFirestore(String userId, String email, String nom,
+      String username, String role) async {
     try {
       await FirebaseFirestore.instance.collection('users').doc(userId).set({
         'email': email,
@@ -45,8 +45,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         height: double.infinity,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/insc.jpg'),
-           
+            image: AssetImage('assets/images/nn.png'),
+            fit: BoxFit.cover,
           ),
         ),
         child: Container(
@@ -58,22 +58,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-              Row( // Use Row instead of Column
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-         Image.asset(
-            'assets/images/logg.png',
-            height: 100,
-            width: 70,
-          ),
-          SizedBox(width: 200), // Add some space between the images
-          Image.asset(
-            'assets/images/imgg.png', // Replace with the path to your second image
-            height: 80,
-            width: 50,
-          ),
-        ],
-      ),
+               SizedBox(height: 70),
                 Padding(
                   padding: const EdgeInsets.only(left: 10),
                   child: Text(
@@ -84,8 +69,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  
-                 
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 10),
@@ -94,11 +77,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 13,
-                      
                     ),
                   ),
-                  
-                 
                 ),
                 SizedBox(height: 20),
                 CustomTextField(
@@ -151,11 +131,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           'user',
                         );
                         Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => LoginScreen(),
-          ),
-        );
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LoginScreen(),
+                          ),
+                        );
                       } catch (e) {
                         // Handle registration errors
                         if (e is FirebaseAuthException) {
@@ -194,7 +174,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     child: Text(
                       "Vous avez un compte? Connectez-vous",
                       style: TextStyle(
-                        color: Color(0xFF002E7F),
+                        color: Colors.black,
                         fontSize: 9,
                         decoration: TextDecoration.underline,
                       ),
@@ -249,7 +229,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             borderSide: BorderSide(color: Colors.grey),
           ),
           prefixIcon: widget.prefixIcon != null
-              ? Icon(widget.prefixIcon, color: Color(0xFF003888))
+              ? Icon(widget.prefixIcon, color: Colors.black)
               : null,
         ),
       ),

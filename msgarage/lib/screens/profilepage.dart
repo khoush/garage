@@ -15,10 +15,11 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+     decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/images/pro.png'),
-          fit: BoxFit.cover,
+          image: AssetImage('assets/images/prof.jpg'),
+          
+         
         ),
       ),
       child: Scaffold(
@@ -46,13 +47,13 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(height: 100),
-                          Center(
-                            child: CircleAvatar(
-                              radius: 70.0,
-                              backgroundImage: AssetImage('assets/images/usss.jpg'),
-                            ),
-                          ),
+                        SizedBox(height: 110),
+                    Center(
+                      child: CircleAvatar(
+                        radius: 70.0,
+                        backgroundImage: AssetImage('assets/images/cc.png'),
+                      ),
+                    ),
                           
                           _buildInfoRow("nom", data['nom'], Icons.person_2),
                           _buildInfoRow("username", data['username'], Icons.person),
@@ -72,7 +73,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: Text(
                     'Se déconnecter',
                     style: TextStyle(
-                      color: Color(0xFF002E7F),
+                      color: Colors.black,
                       fontSize: 14.0,
                       fontWeight: FontWeight.bold,
                     ),

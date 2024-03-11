@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:msgarage/screens/navbar.chat.dart';
 
 class remplPage extends StatefulWidget {
-  const remplPage(String title, {super.key});
+  
 
   @override
   State<remplPage> createState() => _remplPageState();
@@ -16,10 +16,10 @@ class _remplPageState extends State<remplPage> {
   Widget build(BuildContext context) {
     return Scaffold(
        appBar: AppBar(
-        backgroundColor: Color(0xFF002E7F),
+        backgroundColor: Colors.black,
            title: 
           Image.asset(
-            'assets/images/igm.png', // Assurez-vous que le chemin est correct
+            'assets/images/ka.png', // Assurez-vous que le chemin est correct
             width: 70.0,
             height: 70.0,
           ),
@@ -157,13 +157,7 @@ final TextEditingController _raisonController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: double.infinity,
-    decoration: BoxDecoration(
-  image: DecorationImage(
-    image: AssetImage("assets/images/conn.jpg"),
-     // Utilisez BoxFit.cover pour couvrir l'écran sans déformation
-  ),
-),
+   
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: SingleChildScrollView(
@@ -175,7 +169,7 @@ final TextEditingController _raisonController = TextEditingController();
                   child: Text(
                     'Demande de Vehicule \n   de remplacement',
                     style: TextStyle(
-                      color: Color(0xFF7A99AC),
+                      color: Colors.red,
                       fontSize: 17.0,
                       fontWeight: FontWeight.bold,
                     ),
@@ -320,7 +314,7 @@ final TextEditingController _raisonController = TextEditingController();
         },
         child: Icon(
           Icons.calendar_today,
-          color: Color(0xFF002E7F),
+          color: Colors.red,
         ),
       ),
                   ),
@@ -370,7 +364,7 @@ final TextEditingController _raisonController = TextEditingController();
                     ),
                      suffixIcon: Icon(
                       Icons.lock_clock,
-                      color: Color(0xFF002E7F),
+                      color: Colors.red,
                     ),
                   ),
                 ),
@@ -474,7 +468,7 @@ final TextEditingController _raisonController = TextEditingController();
                     // Additional logic or navigation if needed
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Color(0xFF002E7F),
+                    backgroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                     ),

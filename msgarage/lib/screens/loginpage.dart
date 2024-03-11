@@ -94,13 +94,16 @@ String userRole = (userSnapshot.data() as Map<String, dynamic>)['role'] ?? 'user
         backgroundColor: Colors.white,
       ),
       body: Container(
-        
+        width: double.infinity,
+        height: double.infinity,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/conn.jpg'),
-           
+            image: AssetImage('assets/images/nn.png'),
+            fit: BoxFit.cover,
           ),
         ),
+        
+       
         child: Container(
           width: double.infinity,
           height: double.infinity,
@@ -110,23 +113,8 @@ String userRole = (userSnapshot.data() as Map<String, dynamic>)['role'] ?? 'user
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                 Row( // Use Row instead of Column
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(
-            'assets/images/logg.png',
-            height: 100,
-            width: 70,
-          ),
-          SizedBox(width: 200), // Add some space between the images
-          Image.asset(
-            'assets/images/imgg.png', // Replace with the path to your second image
-            height: 70,
-            width: 50,
-          ),
-        ],
-      ),
-                SizedBox(height: 1),
+                
+                SizedBox(height: 70),
                 Padding(
                   padding: const EdgeInsets.only(left: 10),
                   child: Text(
@@ -174,7 +162,7 @@ String userRole = (userSnapshot.data() as Map<String, dynamic>)['role'] ?? 'user
                     child: Text(
                       "Vous n'avez pas de compte? Inscrivez-vous",
                       style: TextStyle(
-                        color: Color(0xFF002E7F),
+                        color: Colors.black,
                         fontSize: 9,
                         decoration: TextDecoration.underline,
                       ),
@@ -235,7 +223,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             borderSide: BorderSide(color: Colors.grey),
           ),
           prefixIcon: widget.prefixIcon != null
-              ? Icon(widget.prefixIcon, color: Color(0xFF003888))
+              ? Icon(widget.prefixIcon, color: Colors.black)
               : null,
         ),
       ),

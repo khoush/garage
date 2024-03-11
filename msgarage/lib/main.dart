@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:msgarage/firebase_options.dart';
-import 'package:msgarage/screens/loginpage.dart';
+import 'package:msgarage/onboarding/onboarding_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,7 +30,7 @@ class IntroductionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     Timer(Duration(seconds: 5), () {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => LoginScreen()),
+        MaterialPageRoute(builder: (context) => OnboardingView()),
       );
     });
 
@@ -39,7 +39,7 @@ class IntroductionScreen extends StatelessWidget {
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage(
-                'assets/images/img.png'), // Changer le chemin d'accès à votre image
+                'assets/images/bb.jpeg'), // Changer le chemin d'accès à votre image
             fit: BoxFit.cover,
           ),
         ),

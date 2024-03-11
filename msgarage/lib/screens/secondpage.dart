@@ -102,7 +102,7 @@ class _SecondPageState extends State<SecondPage> {
     var TextWritingMode;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF002E7F),
+        backgroundColor: Colors.black,
         title: const Text(
           'Avancement',
           style: TextStyle(
@@ -154,7 +154,7 @@ class _SecondPageState extends State<SecondPage> {
                   padding: const EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8.0),
-                    color: const Color(0xFF002E7F),
+                    color: Colors.black,
                   ),
                   child: Text(
                     '$selectedMat',
@@ -298,64 +298,65 @@ class _SecondPageState extends State<SecondPage> {
   ),
 ),
 
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute<void>(
-                        builder: (BuildContext context) => Rendezvous(),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 20, horizontal: 25),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: const Color(0xFF002E7F),
-                    ),
-                    child: const Text(
-                      'Prendre un rendez-vous',
-                      style: TextStyle(
-                        inherit: false,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute<void>(
-                        builder: (BuildContext context) => ClientChatPage(),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: const Color(0xFF002E7F),
-                    ),
-                    child: const Icon(
-                      Icons.chat,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            
+          
           ],
         ),
       ),
+        
+      floatingActionButton: Row(
+        
+        children: [
+          
+          Container(
+            
+            width: 250, // Set your desired width here
+            height: 50,
+            child: FloatingActionButton(
+              
+              onPressed: () {
+                Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => Rendezvous()),
+                      );
+              },
+              mini: true,
+              child: Text(
+                "Prendre un rendez-vous",
+                style: TextStyle(color: Colors.white),
+              ),
+              
+              backgroundColor: Colors.red,
+            ),
+          ),
+          SizedBox(width: 20,),
+           Container(
+            width: 60, // Set your desired width here
+            height: 50,
+            child: FloatingActionButton(
+              onPressed: () {
+             Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => ClientChatPage()),
+                      );
+              },
+              mini: true,
+              child:  const Icon(
+                        Icons.chat,
+                        color: Colors.white,
+                      ),
+              backgroundColor: Colors.black,
+            ),
+            
+          ),
+         
+        ],
+      ),
+      
+      
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniStartFloat,
+      
+      
     );
   }
 
