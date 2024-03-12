@@ -17,6 +17,11 @@ class Acceuil extends StatefulWidget {
 }
 
 class _AcceuilState extends State<Acceuil> {
+  final List<String> carouselImages = [
+    'assets/images/evv.jpg',
+    'assets/images/evvv.jpg',
+    'assets/images/ev.jpg',
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -154,36 +159,26 @@ class _AcceuilState extends State<Acceuil> {
                 ),
               ),
             ),
-            CarouselSlider(
-              items: [
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
+           CarouselSlider(
+              items: carouselImages.map((imagePath) {
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => NouvellePage(imagePath: imagePath)),
+                    );
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Image.asset(
+                      imagePath,
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                  child: Image.asset(
-                    'assets/images/evv.jpg', // Ajoutez le chemin de votre image
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Image.asset(
-                    'assets/images/evvv.jpg', // Ajoutez le chemin de votre image
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Image.asset(
-                    'assets/images/ev.jpg', // Ajoutez le chemin de votre image
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ],
+                );
+              }).toList(),
               options: CarouselOptions(
                 height: 200.0,
                 enlargeCenterPage: true,
@@ -321,6 +316,26 @@ class YourCard extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+class NouvellePage extends StatelessWidget {
+  final String imagePath;
+
+  NouvellePage({required this.imagePath});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Nouvelle Page'),
+      ),
+      body: Center(
+        child: Image.asset(
+          imagePath,
+          fit: BoxFit.cover,
         ),
       ),
     );
