@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:msgarage/screens/client.dart';
 import 'package:msgarage/screens/loginpage.dart';
+import 'package:msgarage/screens/navbar.chat.dart';
 
 
 
@@ -16,7 +16,7 @@ class AuthPage extends StatelessWidget {
         builder: (context, snapshot) {
           // user is logged in
           if (snapshot.hasData) {
-            return ClientChatPage();
+            return StatPage();
           }
 
           // user is NOT logged in

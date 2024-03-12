@@ -133,9 +133,15 @@ class _AcceuilState extends State<Acceuil> {
             ),
             SizedBox(height: 5),
             Column(
-              children: articles.map((article) {
-                return ArticleWidget(article: article);
-              }).toList(),
+              
+               children: [
+        YourCard(
+          imagePath: 'assets/images/ha.jpg', // Remplacez par le chemin de votre image
+          text: 'UN SERVICE PERSONNALISE\n ET DANS LES NORMES',
+          subText:'Autorepar........\n hsgsgtzsuduzi'
+        ),
+        // Ajoutez d'autres éléments à la colonne si nécessaire
+      ],
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -253,106 +259,70 @@ class _AcceuilState extends State<Acceuil> {
    
   }
 }
+class YourCard extends StatelessWidget {
+  final String imagePath;
+  final String text;
+  final String subText;
 
-class ArticleWidget extends StatelessWidget {
-  final Article article;
-
-  ArticleWidget({required this.article});
+  YourCard({required this.imagePath, required this.text , required this.subText});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.black,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: Offset(0, 3),
-          ),
-        ],
-      ),
-      child: ListTile(
-        contentPadding: EdgeInsets.all(0),
-        leading: Stack(
+    return Card(
+      color: Colors.transparent, // Couleur transparente
+      elevation: 0, // Aucune ombre
+      child: Container(
+        padding: EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          color: Colors.white, // Couleur de fond de la carte
+        ),
+        child: Stack(
+          alignment: Alignment.center,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.asset(
-                article.image,
-                width: 150,
-                height: 150,
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                border: Border.all(
+                  color: Colors.grey, // Couleur de la bordure
+                  width: 2.0, // Largeur de la bordure
+                ),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Image.asset(
+                  imagePath,
+                  width: 350.0, // Ajustez la largeur de l'image selon vos besoins
+                  height: 200.0, // Ajustez la hauteur de l'image selon vos besoins
+                  fit: BoxFit.cover, // Ajustez la façon dont l'image est ajustée
+                ),
               ),
             ),
-            Positioned(
-              bottom: 10,
-              left: 10,
-              right: 10,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(10),
-                    bottomRight: Radius.circular(10),
-                  ),
-                  color: Colors.black.withOpacity(0.5),
+           Positioned(
+              left: 12.0, // Ajustez la position du texte à gauche
+              child: Text(
+                text,
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
-                padding: EdgeInsets.all(8.0),
-                child: Text(
-                  article.title,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.0,
-                  ),
+              ),
+            ),
+             Positioned(
+              left: 16.0, // Ajustez la position du sous-texte à gauche
+              bottom: 8.0, // Ajustez la position du sous-texte vers le bas
+              child: Text(
+                subText,
+                style: TextStyle(
+                  fontSize: 14.0,
+                  color: Colors.white,
                 ),
               ),
             ),
           ],
         ),
-        title: Text(
-          article.title,
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 18.0,
-          ),
-        ),
-        subtitle: Padding(
-          padding: const EdgeInsets.only(top: 4.0),
-          child: Text(
-            article.description,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 14.0,
-            ),
-          ),
-        ),
-        onTap: () {
-          // Ajoutez la fonctionnalité lorsque l'article est cliqué
-        },
       ),
     );
   }
 }
-
-class Article {
-  final String title;
-  final String description;
-  final String image;
-
-  Article(
-      {required this.title, required this.description, required this.image});
-}
-
-List<Article> articles = [
-  Article(
-    title: "AutoRepar",
-    description:
-        "Dans le but de renforcer sa présence et sahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh  ",
-    image: "assets/images/ha.jpg",
-  ),
-  // Ajoutez d'autres articles si nécessaire
-];

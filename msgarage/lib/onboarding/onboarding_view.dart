@@ -66,7 +66,7 @@ class _OnboardingViewState extends State<OnboardingView> {
         ),
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
         image: DecorationImage(
           image: AssetImage('assets/images/kiki.jpg'),
           

@@ -3,7 +3,6 @@ import 'package:msgarage/screens/navbar.chat.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AssistancePage extends StatefulWidget {
-  const AssistancePage({Key? key});
 
   @override
   State<AssistancePage> createState() => _AssistancePageState();
@@ -12,7 +11,7 @@ class AssistancePage extends StatefulWidget {
 class _AssistancePageState extends State<AssistancePage> {
   // Méthode pour lancer l'appel téléphonique
   void _launchPhoneCall() async {
-    const phoneNumber = 'tel:+21693709028'; // Remplacez par le numéro de téléphone réel
+    const phoneNumber = 'tel:+21693709028'; 
     if (await canLaunch(phoneNumber)) {
       await launch(phoneNumber);
     } else {

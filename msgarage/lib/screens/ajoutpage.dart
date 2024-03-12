@@ -6,6 +6,8 @@ import 'package:msgarage/screens/navbar.chat.dart';
 class AnotherPage extends StatefulWidget {
 
 
+
+
   @override
   State<AnotherPage> createState() => _AnotherPageState();
 }
