@@ -89,7 +89,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 CustomTextField(
                   controller: _emailController,
-                  label: 'Email',
+                  label: 'Email/Num tel',
                   isPassword: false,
                   prefixIcon: Icons.email,
                 ),

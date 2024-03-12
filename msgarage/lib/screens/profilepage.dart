@@ -73,7 +73,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: Text(
                     'Se déconnecter',
                     style: TextStyle(
-                      color: Colors.black,
+                      color: Colors.red,
                       fontSize: 14.0,
                       fontWeight: FontWeight.bold,
                     ),

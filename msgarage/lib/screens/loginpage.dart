@@ -128,7 +128,7 @@ String userRole = (userSnapshot.data() as Map<String, dynamic>)['role'] ?? 'user
                 ),
                 SizedBox(height: 20),
                 CustomTextField(
-                  label: 'Email',
+                  label: 'Email/Num tel',
                   isPassword: false,
                   prefixIcon: Icons.email,
                   focusNode: emailFocusNode,

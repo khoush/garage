@@ -18,6 +18,14 @@ class _AssistancePageState extends State<AssistancePage> {
       throw 'Impossible de lancer l\'appel';
     }
   }
+  void _launchPhoneCalll() async {
+    const phoneNumber = 'tel:+21693709022'; 
+    if (await canLaunch(phoneNumber)) {
+      await launch(phoneNumber);
+    } else {
+      throw 'Impossible de lancer l\'appel';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +62,7 @@ class _AssistancePageState extends State<AssistancePage> {
                 height: 150, // Ajustez la hauteur selon vos besoins
               ),
 
-              SizedBox(height: 70), // Espace entre l'image et le texte
+              SizedBox(height: 20), // Espace entre l'image et le texte
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -68,7 +76,8 @@ class _AssistancePageState extends State<AssistancePage> {
                   Center(child: Text(" Nous sommes à votre disposition pour\ntoute aide dont vous pourriez avoir besoin", style: TextStyle(fontWeight: FontWeight.normal, fontSize: 13))),
                 ],
               ),
-              SizedBox(height: 80,),
+              
+              SizedBox(height: 20,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -86,6 +95,41 @@ class _AssistancePageState extends State<AssistancePage> {
                       backgroundColor: Colors.red,
                     ),
                     onPressed: _launchPhoneCall, // Bouton "Appeler directement"
+                    child: Text('Appeler directement', style: TextStyle(color: Colors.white)),
+                  ),
+                ],
+              ),
+              Image.asset(
+                'assets/images/remo.png', // Remplacez par le chemin de votre image
+                height: 150, // Ajustez la hauteur selon vos besoins
+              ),
+              SizedBox(height: 20), // Espace entre l'image et le texte
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(child: Text("    Faire appel à un service de remorquage\npour déplacer votre véhicule en panne ou pour\n                     toute autre raison", style: TextStyle(fontWeight: FontWeight.normal, fontSize: 13))),
+                ],
+              ),
+
+              
+              SizedBox(height: 20,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => StatPage()));
+                    },
+                    child: Text('Retour', style: TextStyle(color: Colors.white)),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                    ),
+                    onPressed: _launchPhoneCalll, // Bouton "Appeler directement"
                     child: Text('Appeler directement', style: TextStyle(color: Colors.white)),
                   ),
                 ],

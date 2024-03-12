@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:msgarage/screens/ajoutpage.dart';
 import 'package:msgarage/screens/assistance.dart';
 import 'package:msgarage/screens/client.dart';
+import 'package:msgarage/screens/detailscar.dart';
 import 'package:msgarage/screens/devis.dart';
 import 'package:msgarage/screens/remppage.dart';
 import 'package:msgarage/screens/rendez_vous.dart';
@@ -17,6 +18,12 @@ class Acceuil extends StatefulWidget {
 }
 
 class _AcceuilState extends State<Acceuil> {
+   final List<CarInfo> carInfos = [
+    CarInfo(name: 'EV6', power: '200 000DT', energy: '160 000DT' , rr: '190 980DT '),
+    CarInfo(name: 'EV6', power: '200 000DT', energy: '160 000DT' , rr: '190 980DT '),
+    CarInfo(name: 'EV6', power: '200 000DT', energy: '160 000DT' , rr: '190 980DT '),
+  ];
+
   final List<String> carouselImages = [
     'assets/images/evv.jpg',
     'assets/images/evvv.jpg',
@@ -163,9 +170,11 @@ class _AcceuilState extends State<Acceuil> {
               items: carouselImages.map((imagePath) {
                 return GestureDetector(
                   onTap: () {
+                    int index = carouselImages.indexOf(imagePath);
+                    CarInfo carInfo = carInfos[index];
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => NouvellePage(imagePath: imagePath)),
+                      MaterialPageRoute(builder: (context) => NouvellePage(carInfo: carInfo, imagePath: imagePath)),
                     );
                   },
                   child: Container(
@@ -206,6 +215,7 @@ class _AcceuilState extends State<Acceuil> {
             width: 250, // Set your desired width here
             height: 50,
             child: FloatingActionButton(
+              heroTag: "btn1",
               
               onPressed: () {
                 Navigator.pushReplacement(
@@ -321,23 +331,13 @@ class YourCard extends StatelessWidget {
     );
   }
 }
-class NouvellePage extends StatelessWidget {
-  final String imagePath;
 
-  NouvellePage({required this.imagePath});
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Nouvelle Page'),
-      ),
-      body: Center(
-        child: Image.asset(
-          imagePath,
-          fit: BoxFit.cover,
-        ),
-      ),
-    );
-  }
+class CarInfo {
+  final String name;
+  final String power;
+  final String energy;
+  final String rr;
+
+  CarInfo({required this.name, required this.power, required this.energy , required this.rr});
 }

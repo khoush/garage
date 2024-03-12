@@ -333,6 +333,7 @@ class _SecondPageState extends State<SecondPage> {
             width: 60, // Set your desired width here
             height: 50,
             child: FloatingActionButton(
+              heroTag: "btn2",
               onPressed: () {
              Navigator.pushReplacement(
                         context,
