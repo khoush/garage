@@ -1,13 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:msgarage/screens/ajoutpage.dart';
 import 'package:msgarage/screens/assistance.dart';
 import 'package:msgarage/screens/client.dart';
 import 'package:msgarage/screens/detailscar.dart';
 import 'package:msgarage/screens/devis.dart';
+import 'package:msgarage/screens/not.dart';
 import 'package:msgarage/screens/remppage.dart';
 import 'package:msgarage/screens/rendez_vous.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class Acceuil extends StatefulWidget {
@@ -18,6 +23,28 @@ class Acceuil extends StatefulWidget {
 }
 
 class _AcceuilState extends State<Acceuil> {
+ bool notificationsSeen = false;
+  late SharedPreferences _prefs;
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+      @override
+  void initState() {
+    super.initState();
+    _loadPreferences();
+  }
+
+  _loadPreferences() async {
+    _prefs = await SharedPreferences.getInstance();
+    setState(() {
+      // Charger la valeur de notificationSeen depuis les préférences
+      notificationsSeen = _prefs.getBool('notificationsSeen') ?? false;
+    });
+  }
+
+  _updatePreferences() async {
+    // Mettre à jour la valeur de notificationSeen dans les préférences
+    await _prefs.setBool('notificationsSeen', true);
+  }
    final List<CarInfo> carInfos = [
     CarInfo(name: 'EV6', power: '200 000DT', energy: '160 000DT' , rr: '190 980DT '),
     CarInfo(name: 'EV6', power: '200 000DT', energy: '160 000DT' , rr: '190 980DT '),
@@ -29,12 +56,13 @@ class _AcceuilState extends State<Acceuil> {
     'assets/images/evvv.jpg',
     'assets/images/ev.jpg',
   ];
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Text(
+        title: const Text(
           'Accueil',
           style: TextStyle(
             color: Colors.white,
@@ -43,6 +71,77 @@ class _AcceuilState extends State<Acceuil> {
           ),
         ),
         centerTitle: true,
+        actions: <Widget>[
+          StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection('vehicules')
+                .where('client_id',
+                    isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return IconButton(
+                  icon: Icon(
+                    Icons.notification_add,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {},
+                );
+              }
+
+              if (snapshot.hasError || snapshot.data == null) {
+                return IconButton(
+                  icon: Icon(
+                    Icons.notification_add,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {},
+                );
+              }
+
+              List<Map<String, dynamic>> vehiclesData =
+                  snapshot.data!.docs.map((DocumentSnapshot document) {
+                return document.data() as Map<String, dynamic>;
+              }).toList();
+
+              // Check if any vehicle has an 'Etat' that requires notification
+              vehiclesData.any((vehicle) =>
+                  vehicle['Etat'] == 'Validation' ||
+                  vehicle['Etat'] == 'En attentes des pieces' ||
+                  vehicle['Etat'] == 'Carrosserie et dressage' ||
+                  vehicle['Etat'] == 'Validation' ||
+                  vehicle['Etat'] == 'Achat' ||
+                  vehicle['Etat'] == 'Preparation et peinture' ||
+                  vehicle['Etat'] == 'Lustrage et finition' ||
+                  vehicle['Etat'] == 'Reception' ||
+                  vehicle['Etat'] == 'Devis' ||
+                  vehicle['Etat'] == 'Terminer' ||
+                  vehicle['Etat'] == 'Lavage/Livraison');
+
+              return IconButton(
+                icon: Icon(
+                  Icons.notification_add,
+                  color: notificationsSeen ? Colors.white : Colors.red,
+                ),
+                onPressed: () {
+                  _updatePreferences();
+                  // Set notificationsSeen to true when the notification icon is pressed.
+                  setState(() {
+                    notificationsSeen = true;
+                  });
+
+                  // Navigate to the notification page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const NotifiPage(),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
