@@ -17,16 +17,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _nomController = TextEditingController();
   TextEditingController _nomutilController = TextEditingController();
+    TextEditingController _telController = TextEditingController();
+
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<void> addUserToFirestore(String userId, String email, String nom,
-      String username, String role) async {
+      String username, String telephone,String role) async {
     try {
       await FirebaseFirestore.instance.collection('users').doc(userId).set({
         'email': email,
         'nom': nom,
         'username': username,
+        'telephone' : telephone,
         'role': role,
       });
     } catch (e) {
@@ -62,7 +65,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Padding(
                   padding: const EdgeInsets.only(left: 10),
                   child: Text(
-                    "S'inscrire comme un client ",
+                    "Afin de vous inscrire, \nveuillez remplir le formulaire suivant:",
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 13,
@@ -70,28 +73,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: Text(
-                    "Veuillez introduire ces informations ",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 13,
-                    ),
-                  ),
-                ),
+               
                 SizedBox(height: 20),
                 CustomTextField(
                   controller: _nomController,
-                  label: 'Nom et prenom',
+                  label: 'Nom et Prénom(*)',
                   isPassword: false,
                   prefixIcon: Icons.person,
                 ),
                 CustomTextField(
                   controller: _emailController,
-                  label: 'Email/Num tel',
+                  label: 'Email',
                   isPassword: false,
                   prefixIcon: Icons.email,
+                ),
+                CustomTextField(
+                  controller: _telController,
+                  label: 'Telephone',
+                  isPassword: false,
+                  prefixIcon: Icons.call,
                 ),
                 CustomTextField(
                   controller: _nomutilController,
@@ -128,6 +128,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           _emailController.text,
                           _nomController.text,
                           _nomutilController.text,
+                          _telController.text,
                           'user',
                         );
                         Navigator.push(

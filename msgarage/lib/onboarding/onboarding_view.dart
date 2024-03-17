@@ -126,7 +126,7 @@ class _OnboardingViewState extends State<OnboardingView> {
             if(!mounted)return;
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const LoginScreen()));
           },
-          child: const Text("Get started",style: TextStyle(color: Colors.white),)),
+          child: const Text("Commencer",style: TextStyle(color: Colors.white),)),
     );
  }
 }

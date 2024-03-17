@@ -17,7 +17,7 @@ class Rendezvous extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: Text(
-          'Prise des rendez-vous',
+          'Prise de rendez-vous',
           style: TextStyle(
             color: Colors.white,
             fontSize: 18.0,
@@ -485,7 +485,7 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
                   controller: _vehiculeController,
                   enabled: true,
                   decoration: InputDecoration(
-                    hintText: "Vehicule exitant",
+                    hintText: "Vehicule existant",
                     hintStyle: TextStyle(
                       fontSize: 14.0,
                       color: Colors.grey,

@@ -177,7 +177,7 @@ class ClientChatScreenState extends State<ClientChatScreen> {
                   child: TextField(
                     controller: _messageController,
                     decoration: const InputDecoration(
-                      hintText: 'Enter your message...',
+                      hintText: 'Introduire votre message',
                     ),
                   ),
                 ),

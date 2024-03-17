@@ -5,6 +5,7 @@ import 'package:msgarage/components/buton.dart';
 import 'package:msgarage/screens/admin/admin.dart';
 
 import 'package:msgarage/screens/navbar.chat.dart';
+import 'package:msgarage/screens/resetpw.dart';
 import 'package:msgarage/screens/signup.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -128,7 +129,7 @@ String userRole = (userSnapshot.data() as Map<String, dynamic>)['role'] ?? 'user
                 ),
                 SizedBox(height: 20),
                 CustomTextField(
-                  label: 'Email/Num tel',
+                  label: 'Email',
                   isPassword: false,
                   prefixIcon: Icons.email,
                   focusNode: emailFocusNode,
@@ -141,6 +142,31 @@ String userRole = (userSnapshot.data() as Map<String, dynamic>)['role'] ?? 'user
                   focusNode: passwordFocusNode,
                   controller: passwordController,
                 ),
+                Row(
+  mainAxisAlignment: MainAxisAlignment.end,
+  children: [
+    GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => PasswordResetScreen()),
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(top: 10.0),
+        child: Text(
+          "Mot de passe oublié",
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold
+            
+          ),
+        ),
+      ),
+    ),
+  ],
+),
+
                 
                 SizedBox(height: 50),
                 MyButton(

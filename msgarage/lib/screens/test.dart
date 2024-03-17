@@ -18,7 +18,7 @@ class _ThirdPageState extends State<ThirdPage> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: Text(
-          'Ordre de reception',
+          'Ordres de réception',
           style: TextStyle(
             color: Colors.white,
             fontSize: 20.0,

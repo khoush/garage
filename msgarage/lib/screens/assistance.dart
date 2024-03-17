@@ -67,7 +67,7 @@ class _AssistancePageState extends State<AssistancePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Center(child: Text("Votre assistance sera traitée par téléphone", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15))),
+                  Center(child: Text("Pour tout renseignement et assistance technique,", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14))),
                 ],
               ),
               Row(
