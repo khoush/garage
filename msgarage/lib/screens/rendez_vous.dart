@@ -618,7 +618,7 @@ TextEditingController _heureController = TextEditingController(text: '00:00');
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute<void>(
-                        builder: (BuildContext context) => ClientChatPage(),
+                        builder: (BuildContext context) => UserListScreen(),
                       ),
                     );
                   },

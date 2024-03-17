@@ -77,7 +77,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 SizedBox(height: 20),
                 CustomTextField(
                   controller: _nomController,
-                  label: 'Nom et Prénom(*)',
+                  label: 'Nom et Prénom(*r)',
                   isPassword: false,
                   prefixIcon: Icons.person,
                 ),
