@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:msgarage/screens/details.dart';
@@ -71,7 +72,10 @@ class _ThirdPageState extends State<ThirdPage> {
           // Expanded ListView for displaying vehicles
           Expanded(
             child: FutureBuilder<QuerySnapshot>(
-              future: FirebaseFirestore.instance.collection('vehicules').get(),
+              future: FirebaseFirestore.instance.collection('vehicules')
+             .where('client_id',
+                    isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+              .get(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
@@ -124,7 +128,7 @@ class _ThirdPageState extends State<ThirdPage> {
                             children: [
                               buildRichText("Véhicule   ",
                                   vehicule['matricule'], FontWeight.bold),
-                              buildRichText("Date          ", vehicule['date']),
+                              buildRichText("Marque     ", vehicule['marque']),
                               SizedBox(
                                 height: 20,
                               ),

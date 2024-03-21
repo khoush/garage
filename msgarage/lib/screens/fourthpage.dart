@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:msgarage/screens/client.dart';
 import 'package:msgarage/screens/navbar.chat.dart';
@@ -26,7 +27,10 @@ class _FourthPageState extends State<FourthPage> {
   Future<void> _fetchImmatriculations() async {
     try {
       // Récupérer la collection 'véhicules' depuis Firestore
-      snapshot = await _firestore.collection('vehicules').get();
+      snapshot = await _firestore.collection('vehicules')
+       .where('client_id',
+                    isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+      .get();
 
       // Parcourir les documents de la collection
       snapshot.docs.forEach((DocumentSnapshot<Map<String, dynamic>> doc) {
