@@ -67,7 +67,7 @@ class _NotifiPageState extends State<NotifiPage> {
                 return Card(
                   elevation: 1,
                   child: ListTile(
-                    title: Text("Aucun véhicule pour le moment"),
+                    title: Text("aucune alerte pour l’instant"),
                   ),
                 );
               }

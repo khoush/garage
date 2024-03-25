@@ -154,7 +154,7 @@ class _MyFormState extends State<MyForm> {
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Text(
-                      'Ajouter votre Citroën',
+                      'Ajouter votre KIA',
                       style: TextStyle(
                         color: Colors.red,
                         fontSize: 17.0,
@@ -496,7 +496,7 @@ class _MyFormState extends State<MyForm> {
                     controller: _numchhController,
                     enabled: true,
                     decoration: InputDecoration(
-                      hintText: "Réecrire le numéro de châssis",
+                      hintText: "veuillez confirmer le numéro de châssis",
                       hintStyle: TextStyle(
                         fontSize: 14.0,
                         color: Colors.grey,

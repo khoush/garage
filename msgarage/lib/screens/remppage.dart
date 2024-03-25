@@ -432,7 +432,7 @@ final TextEditingController _raisonController = TextEditingController();
                   ],
                 ),
                 child: TextFormField(
-                  controller: _matrController,
+                  controller: _raisonController,
                   enabled: true,
                   decoration: InputDecoration(
                     hintText: "Raison",
