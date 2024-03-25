@@ -67,7 +67,7 @@ class _NotifiPageState extends State<NotifiPage> {
                 return Card(
                   elevation: 1,
                   child: ListTile(
-                    title: Text("Véhicule sans date"),
+                    title: Text("Aucun véhicule pour le moment"),
                   ),
                 );
               }
@@ -95,7 +95,7 @@ class _NotifiPageState extends State<NotifiPage> {
                     color: Colors.red,
                   ),
                   title: RichText(
-                    text: TextSpan(
+                    text: TextSpan(                                                                                     
                       style: DefaultTextStyle.of(context).style,
                       children: <TextSpan>[
                         TextSpan(

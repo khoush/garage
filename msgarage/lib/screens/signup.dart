@@ -104,78 +104,85 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   prefixIcon: Icons.lock,
                 ),
                 SizedBox(height: 50),
-                MyyButton(
-                  onTap: () async {
-                    if (_emailController.text.isNotEmpty &&
-                        _passwordController.text.isNotEmpty &&
-                        _nomController.text.isNotEmpty &&
-                        _nomutilController.text.isNotEmpty &&
-                        _telController.text.isNotEmpty) {
-                      if (_passwordController.text.length < 6) {
-                        // Afficher un message d'erreur pour informer
-                        // l'utilisateur
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                                'Le mot de passe doit contenir au moins 6 caractères'),
-                          ),
-                        );
-                        return; // Arrêter l'exécution de la fonction si le mot de passe est invalide
-                      }
+               MyyButton(
+  onTap: () async {
+    if (_emailController.text.isNotEmpty &&
+        _passwordController.text.isNotEmpty &&
+        _nomController.text.isNotEmpty &&
+        _nomutilController.text.isNotEmpty &&
+        _telController.text.isNotEmpty) {
+      if (_passwordController.text.length < 6) {
+        // Afficher un message d'erreur pour informer
+        // l'utilisateur
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Le mot de passe doit contenir au moins 6 caractères'),
+          ),
+        );
+        return; // Arrêter l'exécution de la fonction si le mot de passe est invalide
+      }
 
-                      try {
-                        UserCredential userCredential =
-                            await _auth.createUserWithEmailAndPassword(
-                          email: _emailController.text,
-                          password: _passwordController.text,
-                        );
+      try {
+        UserCredential userCredential =
+            await _auth.createUserWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
 
-                        // User is successfully registered
-                        print("User registered: ${userCredential.user?.uid}");
+        // User is successfully registered
+        print("User registered: ${userCredential.user?.uid}");
 
-                        // Ajouter l'utilisateur à Firestore
-                        await addUserToFirestore(
-                          userCredential.user!.uid,
-                          _emailController.text,
-                          _nomController.text,
-                          _nomutilController.text,
-                          _telController.text,
-                          'user',
-                        );
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => LoginScreen(),
-                          ),
-                        );
-                      } catch (e) {
-                        // Handle registration errors
-                        if (e is FirebaseAuthException) {
-                          print("Error during registration - ${e.message}");
-                          if (e.code == 'email-already-in-use') {
-                            // User is already registered
-                            print("Email is already in use");
-                            // Ajouter ici le code pour informer l'utilisateur de l'erreur
-                          } else {
-                            // Autres erreurs d'authentification
-                            print("Autre erreur d'authentification");
-                            // Ajouter ici le code pour informer l'utilisateur de l'erreur
-                          }
-                        } else {
-                          // Autres erreurs non liées à Firebase Auth
-                          print("Erreur inattendue: $e");
-                        }
-                      }
-                    } else {
-                      // Afficher un message d'erreur pour informer l'utilisateur
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Veuillez remplir tous les champs'),
-                        ),
-                      );
-                    }
-                  },
-                ),
+        // Ajouter l'utilisateur à Firestore
+        await addUserToFirestore(
+          userCredential.user!.uid,
+          _emailController.text,
+          _nomController.text,
+          _nomutilController.text,
+          _telController.text,
+          'user',
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LoginScreen(),
+          ),
+        );
+      } catch (e) {
+        // Handle registration errors
+        if (e is FirebaseAuthException) {
+          print("Error during registration - ${e.message}");
+          if (e.code == 'email-already-in-use') {
+            // User is already registered
+            print("Email is already in use");
+            // Afficher un Snackbar pour informer l'utilisateur que l'e-mail est déjà utilisé
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Cet e-mail est déjà utilisé, veuillez en choisir un autre.'),
+              ),
+            );
+          } else {
+            // Autres erreurs d'authentification
+            print("Autre erreur d'authentification");
+            // Ajouter ici le code pour informer l'utilisateur de l'erreur
+          }
+        } else {
+          // Autres erreurs non liées à Firebase Auth
+          print("Erreur inattendue: $e");
+        }
+      }
+    } else {
+      // Afficher un message d'erreur pour informer l'utilisateur
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Veuillez remplir tous les champs'),
+        ),
+      );
+    }
+  },
+),
+
                 SizedBox(height: 10),
                 GestureDetector(
                   onTap: () {
