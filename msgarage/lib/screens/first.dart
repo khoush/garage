@@ -47,14 +47,20 @@ class _AcceuilState extends State<Acceuil> {
   }
    final List<CarInfo> carInfos = [
     CarInfo(name: 'EV6', power: '200 000DT', energy: '160 000DT' , rr: '190 980DT '),
-    CarInfo(name: 'EV6', power: '200 000DT', energy: '160 000DT' , rr: '190 980DT '),
-    CarInfo(name: 'EV6', power: '200 000DT', energy: '160 000DT' , rr: '190 980DT '),
+    CarInfo(name: 'Kia sportage hybride', power: '200 000DT', energy: '160 000DT' , rr: '190 980DT '),
+    CarInfo(name: 'Kia sportage', power: '200 000DT', energy: '160 000DT' , rr: '190 980DT '),
+    CarInfo(name: 'Kia seltos', power: '200 000DT', energy: '160 000DT' , rr: '190 980DT '),
+    CarInfo(name: 'Kia sorento', power: '200 000DT', energy: '160 000DT' , rr: '190 980DT '),
+    CarInfo(name: 'Kia xceed', power: '200 000DT', energy: '160 000DT' , rr: '190 980DT '),
   ];
 
   final List<String> carouselImages = [
-    'assets/images/evv.jpg',
-    'assets/images/evvv.jpg',
+    'assets/images/kias.jpg',
+    'assets/images/kia.jpg',
     'assets/images/ev.jpg',
+    'assets/images/kiasel.jpg',
+    'assets/images/kiaso.jpg',
+    'assets/images/kiax.jpg',
   ];
   
   @override
@@ -193,7 +199,7 @@ class _AcceuilState extends State<Acceuil> {
                       backgroundColor: Colors.black,
                     ),
                     child: Text(
-                      'TARIFS Et DEVIS',
+                      'TARIFS ET DEVIS',
                       style: TextStyle(fontSize: 9, color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -247,9 +253,8 @@ class _AcceuilState extends State<Acceuil> {
               
                children: [
         YourCard(
-          imagePath: 'assets/images/ha.jpg', // Remplacez par le chemin de votre image
-          text: 'UN SERVICE PERSONNALISE\n ET DANS LES NORMES',
-          subText:'Autorepar........\n hsgsgtzsuduzi'
+          imagePath: 'assets/images/kiafir.jpg', text: '', subText: '', // Remplacez par le chemin de votre image
+          
         ),
         // Ajoutez d'autres éléments à la colonne si nécessaire
       ],
@@ -257,7 +262,7 @@ class _AcceuilState extends State<Acceuil> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                'Véhicules Neufs KIA',
+                'Découvrez les nouveautés KIA ',
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 15.0,
