@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:msgarage/components/color.dart';
 import 'package:msgarage/onboarding/onboarding_items.dart';
-import 'package:msgarage/screens/first.dart';
-import 'package:msgarage/screens/loginpage.dart';
+
+import 'package:msgarage/screens/testpage.dart';
 
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -125,7 +125,7 @@ class _OnboardingViewState extends State<OnboardingView> {
             //After we press get started button this onboarding value become true
             // same key
             if(!mounted)return;
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const LoginScreen()));
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const Acceuill()));
           },
           child: const Text("Commencer",style: TextStyle(color: Colors.white),)),
     );
