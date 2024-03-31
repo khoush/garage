@@ -88,6 +88,10 @@ class _AcceuilState extends State<Acceuill> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
+                       Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const LoginScreen()),
+                      );
                      
                     },
                     style: ElevatedButton.styleFrom(
@@ -102,7 +106,11 @@ class _AcceuilState extends State<Acceuill> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      
+                       Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const LoginScreen()),
+                      );
+
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.black,
@@ -114,6 +122,10 @@ class _AcceuilState extends State<Acceuill> {
                   ),
                   ElevatedButton(
                     onPressed: () {
+                       Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const LoginScreen()),
+                      );
                       
                     },
                     style: ElevatedButton.styleFrom(
@@ -136,7 +148,10 @@ class _AcceuilState extends State<Acceuill> {
               padding: const EdgeInsets.only(left: 16.0, right: 16.0),
               child: ElevatedButton(
                 onPressed: () {
-                
+                 Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const LoginScreen()),
+                      );
                 },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.black,

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:msgarage/components/buton.dart';
 import 'package:msgarage/screens/loginpage.dart';
+import 'package:msgarage/screens/testpage.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -41,6 +42,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
+         leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            Navigator.of(context)
+                .pushReplacement(MaterialPageRoute(builder: (_) => Acceuill()));
+          },
+        ),
       ),
       body: Container(
         width: double.infinity,
